@@ -26,3 +26,7 @@ fp-info-cache
 *.csv
 
 hide
+pcb/tesina-backups
+
+*.log
+*.raw
