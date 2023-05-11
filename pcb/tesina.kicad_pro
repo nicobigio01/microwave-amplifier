@@ -379,13 +379,15 @@
         "microvia_drill": 0.1,
         "name": "50Ohm",
         "nets": [
-          "/Amplificatore1/STAGE1_IN",
-          "/Amplificatore1/STAGE2_OUT",
-          "/Amplifier2/STAGE1_IN",
-          "/Amplifier2/STAGE2_OUT",
-          "/Amplifier3/STAGE1_IN",
-          "/Amplifier3/STAGE2_OUT",
-          "/STAGE1_OUT"
+          "/Amplifier1/RF1_IN",
+          "/Amplifier1/RF1_IN_BM",
+          "/Amplifier1/RF1_OUT",
+          "/Amplifier1/RF1_OUT_AM",
+          "/Amplifier1/RF1_OUT_BF",
+          "/Amplifier2/RF2_IN",
+          "/Amplifier2/RF2_IN_AM",
+          "/Amplifier2/RF2_OUT",
+          "/Amplifier2/RF2_OUT_BM"
         ],
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
@@ -455,16 +457,12 @@
       ""
     ],
     [
-      "2a62d821-a34b-4490-b80a-5381b036a06b",
-      "Amplificatore1"
+      "87ee7424-77dd-42bb-9d0a-6365445b897a",
+      "Amplifier1"
     ],
     [
       "4e3d076a-abc7-4ccc-a891-541b92d429fd",
       "Amplifier2"
-    ],
-    [
-      "a10a9150-8f3a-4a05-bca9-431c941d9766",
-      "Amplifier3"
     ]
   ],
   "text_variables": {}
