@@ -380,6 +380,7 @@
         "name": "50Ohm",
         "nets": [
           "/Amplifier1/RF1_IN",
+          "/Amplifier1/RF1_IN_AM",
           "/Amplifier1/RF1_IN_BM",
           "/Amplifier1/RF1_OUT",
           "/Amplifier1/RF1_OUT_AM",
@@ -387,7 +388,10 @@
           "/Amplifier2/RF2_IN",
           "/Amplifier2/RF2_IN_AM",
           "/Amplifier2/RF2_OUT",
-          "/Amplifier2/RF2_OUT_BM"
+          "/Amplifier2/RF2_OUT_BM",
+          "/Amplifier2/STAGE2_OUT",
+          "Net-(C19-Pad2)",
+          "Net-(C7-Pad2)"
         ],
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
