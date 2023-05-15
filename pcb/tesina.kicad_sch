@@ -788,6 +788,9 @@
     (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/45094a9b-96ef-4422-8e84-650a4b8ece61"
       (reference "#PWR0129") (unit 1) (value "GND") (footprint "")
     )
+    (path "/87ee7424-77dd-42bb-9d0a-6365445b897a/f10d4adb-f024-4c05-ad2a-4fe8bc51b34a"
+      (reference "#PWR?") (unit 1) (value "GND") (footprint "")
+    )
     (path "/87ee7424-77dd-42bb-9d0a-6365445b897a/ac03c825-4c12-4c29-b388-30701e68b944"
       (reference "C1") (unit 1) (value "100pF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
@@ -823,6 +826,9 @@
     )
     (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/beb675ec-a878-4e60-8dfc-5b329a9ff34a"
       (reference "C20") (unit 1) (value "100pF") (footprint "Capacitor_SMD:C_0603_1608Metric")
+    )
+    (path "/87ee7424-77dd-42bb-9d0a-6365445b897a/0493fad5-de27-4ec6-ac8b-c4dfccc03df1"
+      (reference "C?") (unit 1) (value "100nF") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/b5a1e2cf-8653-43c2-a55c-ab49b56c5509"
       (reference "H1") (unit 1) (value "MountingHole_Pad") (footprint "MountingHole:MountingHole_2.5mm_Pad_TopBottom")
