@@ -34,8 +34,8 @@
         "other_text_upright": false,
         "pads": {
           "drill": 0.0,
-          "height": 2.46,
-          "width": 0.79
+          "height": 4.7,
+          "width": 4.7
         },
         "silk_line_width": 0.15,
         "silk_text_italic": false,
@@ -55,7 +55,16 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "clearance|103939869|85313908|c90e3e31-b11d-485e-a676-c069db265289|879a2d53-2916-44b6-b073-927a472eaa5a",
+        "clearance|105354083|83899694|9acf2eab-4d04-4102-b808-910bcb7b51c7|879a2d53-2916-44b6-b073-927a472eaa5a",
+        "clearance|106570306|85115917|9acf2eab-4d04-4102-b808-910bcb7b51c7|c047f7b9-a2ff-46e9-9180-0ac049649710",
+        "clearance|90720000|88270000|c20c038e-0730-4c28-bb77-cd19c59bd079|3c82ea27-7bf8-478d-a5a2-4082b42ab4c7",
+        "clearance|90720000|89130000|6816e0f0-6ce7-473b-a86f-5cb4b3477db9|d40d7ad1-d65f-4a41-a8ac-007e7f619574",
+        "clearance|90720000|89990000|6816e0f0-6ce7-473b-a86f-5cb4b3477db9|3c82ea27-7bf8-478d-a5a2-4082b42ab4c7",
+        "clearance|91560000|88630000|663305d4-b42d-4fea-af07-e982369699fb|d40d7ad1-d65f-4a41-a8ac-007e7f619574",
+        "clearance|92440000|88630000|c20c038e-0730-4c28-bb77-cd19c59bd079|d40d7ad1-d65f-4a41-a8ac-007e7f619574"
+      ],
       "meta": {
         "version": 2
       },
@@ -103,15 +112,15 @@
         "allow_blind_buried_vias": false,
         "allow_microvias": false,
         "max_error": 0.005,
-        "min_clearance": 0.0,
-        "min_copper_edge_clearance": 0.0,
-        "min_hole_clearance": 0.25,
+        "min_clearance": 0.3,
+        "min_copper_edge_clearance": 0.5,
+        "min_hole_clearance": 0.39999999999999997,
         "min_hole_to_hole": 0.25,
         "min_microvia_diameter": 0.19999999999999998,
         "min_microvia_drill": 0.09999999999999999,
         "min_silk_clearance": 0.0,
         "min_through_hole_diameter": 0.3,
-        "min_track_width": 0.19999999999999998,
+        "min_track_width": 0.3,
         "min_via_annular_width": 0.049999999999999996,
         "min_via_diameter": 0.39999999999999997,
         "solder_mask_clearance": 0.0,
