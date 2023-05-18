@@ -1073,9 +1073,6 @@
     (path "/7a73eab1-5d7b-4872-a238-c2ac6bc6f27b"
       (reference "#PWR0111") (unit 1) (value "GND") (footprint "")
     )
-    (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/7953584d-b841-4595-a6d3-d80b17a03b27"
-      (reference "#PWR0114") (unit 1) (value "GND") (footprint "")
-    )
     (path "/a5d88b64-c3d9-4f91-bd07-74a2502d5d70"
       (reference "#PWR0122") (unit 1) (value "GND") (footprint "")
     )
@@ -1115,20 +1112,17 @@
     (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/d4ea7fa6-1841-4de9-ba37-7965ae7c1256"
       (reference "C7") (unit 1) (value "100pF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
+    (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/2ecaa85f-9b2a-4cd7-b912-5a2e5071c898"
+      (reference "C8") (unit 1) (value "11.8pF") (footprint "Capacitor_SMD:C_0603_1608Metric")
+    )
     (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/a8340b88-8d21-4253-a26d-099cf6225b90"
       (reference "C9") (unit 1) (value "1.45pF") (footprint "Capacitor_SMD:C_0603_1608Metric")
-    )
-    (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/9a1c3504-0cda-4a2b-90da-1f74054da7d2"
-      (reference "C11") (unit 1) (value "100nF") (footprint "Capacitor_SMD:C_1206_3216Metric")
     )
     (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/f879f1f1-e857-44f7-8416-cafef51c1310"
       (reference "C16") (unit 1) (value "100pF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/cf3eae12-5c82-408b-9fea-6c0b26799d3d"
       (reference "C18") (unit 1) (value "100pF") (footprint "Capacitor_SMD:C_0603_1608Metric")
-    )
-    (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/85c7e6c6-d500-440b-837c-d74ee9b9f3b4"
-      (reference "C19") (unit 1) (value "398fF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/beb675ec-a878-4e60-8dfc-5b329a9ff34a"
       (reference "C20") (unit 1) (value "100pF") (footprint "Capacitor_SMD:C_0603_1608Metric")
@@ -1169,11 +1163,11 @@
     (path "/87ee7424-77dd-42bb-9d0a-6365445b897a/ef308601-5bbe-46f8-9ccd-99994fc981ec"
       (reference "L1") (unit 1) (value "7.15nH") (footprint "Nicobigio01:Coilcraft_1606-xxLx")
     )
+    (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/87aaca49-93b2-4f01-be74-7d8146a587c8"
+      (reference "L2") (unit 1) (value "2.55nH") (footprint "Nicobigio01:Coilcraft_0906-xxLx")
+    )
     (path "/87ee7424-77dd-42bb-9d0a-6365445b897a/afbc33da-7c37-4366-a55f-ecd4020c82d4"
       (reference "L3") (unit 1) (value "7.15nH") (footprint "Nicobigio01:Coilcraft_1606-xxLx")
-    )
-    (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/37d5fc4a-acdf-473d-920b-4cdec169acd3"
-      (reference "L11") (unit 1) (value "1.26nH") (footprint "Nicobigio01:Coilcraft_0906-xxLx")
     )
     (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/9c701d13-435b-4e74-bda7-9faf158617e2"
       (reference "L12") (unit 1) (value "7.15nH") (footprint "Nicobigio01:Coilcraft_1606-xxLx")
@@ -1182,7 +1176,7 @@
       (reference "L14") (unit 1) (value "7.15nH") (footprint "Nicobigio01:Coilcraft_1606-xxLx")
     )
     (path "/4e3d076a-abc7-4ccc-a891-541b92d429fd/10c9f538-b274-47ef-bfcd-d762cb167581"
-      (reference "L15") (unit 1) (value "1.78nH") (footprint "Nicobigio01:Coilcraft_0906-xxLx")
+      (reference "L15") (unit 1) (value "7.15 nH") (footprint "Nicobigio01:Coilcraft_1606-xxLx")
     )
     (path "/87ee7424-77dd-42bb-9d0a-6365445b897a/7c94d69c-6151-4a9f-b98d-dcb61db86255"
       (reference "Q1") (unit 1) (value "BFP640") (footprint "Nicobigio01:SOT-343")
@@ -1227,10 +1221,10 @@
       (reference "R12") (unit 1) (value "375Ω") (footprint "Resistor_SMD:R_0603_1608Metric")
     )
     (path "/87ee7424-77dd-42bb-9d0a-6365445b897a/edd0b1fa-baf2-421e-a314-027df8d4b3c0"
-      (reference "U1") (unit 1) (value "Single_Stub_Input") (footprint "Nicobigio01:Microwave_Single_Stub_Input")
+      (reference "U1") (unit 1) (value "Single_Stub_Input") (footprint "Nicobigio01:Microwave_Stub_In2")
     )
     (path "/87ee7424-77dd-42bb-9d0a-6365445b897a/4fa99631-1918-4b8d-929b-ca74fdc4c9fc"
-      (reference "U2") (unit 1) (value "Single_Stub_Output") (footprint "Nicobigio01:Microwave_SIngle_Stub_Output")
+      (reference "U2") (unit 1) (value "Single_Stub_Output") (footprint "Nicobigio01:Microwave_Stub_Out2")
     )
   )
 )
