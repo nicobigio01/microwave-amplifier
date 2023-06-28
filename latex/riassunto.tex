@@ -1,0 +1,22 @@
+\documentclass[12pt]{article}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{derivative}
+
+\begin{document}
+\section{Introduzione}
+\subsection{Motivazione e Contesto}
+Questa tesi si pone come obiettivo la realizzazione di un amplificatore RF e la successiva analisi qualitativa a bassa temperatura, amplificatori di questo tipo sono richiesti in molti ambiti sia di ricerca che industriali e la loro progettazione e caratterizzazione risulta essere diversa rispetto ad altri dispositivi operanti a frequenze più basse.
+L'amplificatore è realizzato con transistor bipolari a eterogiunzione SiGe in configurazione a emettitore comune, la prima fase di progettazione ha riguardato la scelta del punto di lavoro, per garantire una bassa potenza dissipata dal transistor durante l'esercizio è stata scelta una corrente di collettore $I_{C}=\SI{8}{\milli\ampere}$ e una tensione collettore-emettitore $V_{CE}=\SI{3.0}{\volt}$ , individuato il punto di lavoro è stato possibile dedicarsi alla progettazione della parte di segnale.
+Un tipico amplificatore RF è composto da una rete di adattamento di ingresso con il compito di adattare l'impedenza del generatore a quella in ingresso del transistor, una di uscita per adattare l'uscita del transistor all'impedenza di carico e infine il transistor stesso, a differenza di quanto accade a bassa frequenza per studiare la risposta di piccolo segnale non viene utilizzato un modello a componenti concentrati del transistor ma si preferisce affidarsi a valori misurati e tabulati dei parametri di scattering.
+Il primo passaggio di progettazione consiste nel valutare la stabilità della configurazione,
+
+
+
+
+Siccome i parametri del transistor non sono modificabili una volta definito il punto di lavoro lo sforzo di progettazione sta nel determinare correttamente la reti di adattamento, in questo caso è stato scelto di realizzare un amplificatore con massimo guadagno e una banda stretta centrata a $\SI{5}{\giga\hertz}$, per raggiungere questo obiettivo le reti di adattamento in ingresso e uscita sono state realizzate in modo da massimizzare il trasferimento di potenza
+
+
+
+\end{document}

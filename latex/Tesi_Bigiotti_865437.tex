@@ -1,0 +1,64 @@
+\documentclass[12pt]{article}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{derivative}
+
+\begin{document}
+\section{Introduzione}
+\subsection{Motivazione e Contesto}
+Negli ultimi decenni si è visto un notevole sviluppo della tecnologia legata ai sistemi a microonde dovuta a crescenti necessità sia industriali che di ricerca.
+Quantum computing, radioastronomia e comunicazioni satellitari sono alcuni dei campi più importanti dove dispositivi a microonde devono lavorare a temperature
+criogeniche, questa tesi triennale si pone come scopo quello di introdurre ai concetti fondamentali della progettazione nel campo delle microonde necessari per
+la progettazione e la successiva caratterizzazione di un semplice amplificatore RF, a titolo esplorativo verranno valutate anche le caratteristiche a bassa
+temperatura.
+
+\subsection{Concetti Preliminari}
+\paragraph{Linee di Trasmissione e Microstrip}
+L'analisi dei dispositivi a microonde richiede un cambio di paradigma rispetto alla teoria dei circuiti classica, lo studio dell'elettronica a bassa frequenza si basa sull'applicazione delle Leggi di Kirchhoff ottenute come approssimazione delle equazioni di Maxwell sotto opportune condizioni che vengono identificate con il modello a parametri concentrati.
+Nel modello a parametri concentrati i conduttori che formano le interconnessioni fra i componenti vengono considerati ideali, su di essi non si ha alcuna variazione di carica (la carica fluisce senza che si accumuli lungo i conduttori per effetti capacitivi),
+\begin{equation}
+    \pdv{q}{t}=0
+\end{equation}
+mentre la variazione di flusso magnetico al di fuori di essi è nulla
+\begin{equation}
+    \pdv{\phi}{t}=0
+\end{equation}
+I parametri circuitali (induttanza, capacità e resistenza) sono concentrati su componenti puntiformi, nella realtà induttori e condensatori hanno una dimensione fisica ma variazioni di flusso magnetico e di carica rimangono confinate in regioni di spazio definite, basta pensare come esempio ad un solenoide in cui si trascurano gli effetti di bordo: il campo magnetico risulta non nullo solo all'interno del solenoide.
+Quando la lunghezza d'onda dei segnali in gioco diventa comparabile con le dimensioni fisiche del circuito non è più possibile affidarsi ad un modello a parametri concentrati ma occorre considerare i conduttori come linee di trasmissioni su cui è possibile avere accumuli di carica locali e campi elettrici e magnetici non nulli necessari alla propagazione dei segnali lungo la linea.
+In una linea di trasmissione i parametri circuitali sono distribuiti lungo la linea e le grandezze elettriche come corrente e tensione variano in ampiezza e fase muovendosi sulla linea secondo un'equazione differenziale caratteristica chiamata equazione dei telegrafisti,
+
+EQ. TELEGR. 
+CIRCUITO LINEA
+
+le grandezze elettriche dipendono dalla capacità e induttanza per unità di lunghezza fissate dalla geometria della linea e da due parametri dissipativi, una conduttanza parallelo che modellizza le perdite nel dielettrico e una resistenza serie associata alle perdite nei conduttori, per semplificare la trattazione si considera spesso una linea senza perdita ($R=G=0$) in questa approssimazione la propagazione di un onda lungo la linea avviene senza attenuazione e la velocità di propagazione dipende solo da $L$ e $C$ e quindi dalla geometria dei conduttori, per riassumere le caratteristiche di una linea senza perdita si fa affidamento alla suo impedenza caratteristica
+\begin{equation}
+    Z_0=\sqrt{\dfrac{L}{C}}
+\end{equation}
+L'impedenza caratteristica è un parametro molto importante ai fini dell'integrità dei segnali a radiofrequenza, due linee con impedenza caratteristica differente avranno due velocità di propagazione diverse, all'interfaccia tra le due questa discontinuità causerà una riflessione dell'onda incidente con conseguenze sia sulla qualità del segnale che sulla potenza trasmessa.
+
+\paragraph{Carta di Smith}
+La carta di Smith è un'utile strumento che è stato utilizzato in maniera ricorrente durante lo sviluppo di questa tesi, la sua utilità deriva dalla semplicità con cui si riescono ad analizzare problemi relativi alle linee di trasmissione.
+Ogni punto del grafico rappresenta un particolare valore di impedenza, le circonferenze disegnate nella carta rappresentano percorsi a resistenza costante (in azzurro) o reattanza costante (in rosso), le impedenze sono normalizzate rispetto un valore di riferimento solitamente di $\SI{50}{\ohm}$ che identifica il centro della carta
+
+\paragraph{Parametri di Scattering}
+
+\section{Progettazione}
+\subsection{Polarizzazione e Punto di Lavoro}
+\subsection{Studio ad Alta Frequenza}
+\paragraph{Stabilità}
+\paragraph{Matching Network e Guadagno}
+
+
+
+\section{Caratterizzazione}
+
+\section{Conclusione}
+
+
+
+
+
+
+
+\end{document}
