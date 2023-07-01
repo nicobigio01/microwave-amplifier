@@ -3,6 +3,12 @@
 \usepackage{amsmath}
 \usepackage{siunitx}
 \usepackage{derivative}
+\usepackage{graphicx}
+\usepackage[a4paper, total={6in, 9in}]{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{derivative}
 
 \begin{document}
 \section{Introduzione}
@@ -13,45 +19,41 @@ criogeniche, questa tesi triennale si pone come scopo quello di introdurre ai co
 la progettazione e la successiva caratterizzazione di un semplice amplificatore RF, a titolo esplorativo verranno valutate anche le caratteristiche a bassa
 temperatura.
 
-\subsection{Concetti Preliminari}
-\paragraph{Linee di Trasmissione e Microstrip}
-L'analisi dei dispositivi a microonde richiede un cambio di paradigma rispetto alla teoria dei circuiti classica, lo studio dell'elettronica a bassa frequenza si basa sull'applicazione delle Leggi di Kirchhoff ottenute come approssimazione delle equazioni di Maxwell sotto opportune condizioni che vengono identificate con il modello a parametri concentrati.
-Nel modello a parametri concentrati i conduttori che formano le interconnessioni fra i componenti vengono considerati ideali, su di essi non si ha alcuna variazione di carica (la carica fluisce senza che si accumuli lungo i conduttori per effetti capacitivi),
+\subsection{Transistor a eterogiunzione SiGe}
+\subsection{Analisi dei circuiti a microonde e linee di trasmissione}
+\section{Amplificatori RF e progettazione}
+
+\subsection{Punto di Lavoro}
+\label{sub_q_point}
+La realizzazione di amplificatori operanti nel range delle microonde parte da una livello comune a tutti gli amplificatori: la scelta del punto di lavoro. Per poter operare correttamente e fornire un guadagno adeguato occorre polarizzare il dispositivo attivo che alimenta il nostro amplificatore, vanno quindi definite le correnti assorbite e le tensioni ai capi del transistor in condizioni statiche.
+
+La polarizzazione dei transistor SiGe può essere trattata analogamente a quella dei normali BJT, considerando una configurazione ad emettitore comune in cui il terminale di connettore i due parametri principali che caratterizzano la risposta di piccolo segnale e che individuano il punto di lavoro sono la corrente assorbita dal collettore $I_C$ e la tensione fra collettore ed emettitore $V_{CE}$. Queste due variabili influenzano le prestazioni in termini di rumore, risposta in frequenza del transistor, guadagno, stabilità e dissipazione di potenza, ai fini di questa tesi solo le ultime due caratteristiche hanno condizionato la scelta della polarizzazione.
+
+Definiti da progetto $I_{C}=\SI{8}{\milli\ampere}$, $V_{CE}=\SI{3.0}{\volt}$ e la tensione di alimentazione $V_{CC}=\SI{6}{\volt}$ e ricavati da datasheet la tensione base-collettore $V_{BE} = \SI{0.8}{\volt}$ e il guadagno statico di corrente $h_{FE} = \dfrac{I_C}{I_B}=160$ è stato possibile determinare la rete di polarizzazione che riportiamo di seguito:
+
+!!!RETE DI POLSRIZZAZIONE!!!
+
+\paragraph{Analisi della rete di polarizzazione}
+La rete di polarizzazione è composta di una resistenza di base $R_{B1}$ e una di collettore $R_C$ che regolano rispettivamente tensione e corrente di base e di collettore, è presente anche una terza resistenza $R_{B2}$ che permette di variare la corrente di base indipendentemente dalla tensione di collettore. I due induttori $L_C$ e $L_B$ servono a fornire un percorso a bassa resistenza a corrente continua e ad alta impedenza alla frequenza di esercizio disaccoppiando il circuito di polarizzazione da quello di segnale.
+
+I parametri del transistor come $V_{BE}$ e $h_{FE}$ dipendono fortemente dalla temperatura, per stabilizzare il punto di lavoro rispetto a possibili variazioni la rete di polarizzazione include un meccanismo di retroazione positiva. Se a causa di variazioni di $V_{BE}$ o $h_{FE}$ la corrente di collettore aumenta la caduta di tensione su $R_{C}$ aumenta e di conseguenza diminuisce la tensione $V_{BE}$, dall'equazione di Ebers-Molls si ricava che la corrente di collettore deve diminuire ristabilendo l'equilibrio.
+
+!!!Eq di eb molls!!!
+
+Per rendere questo meccanismo di retroazione effettivo occorre selezionare una resistenza $R_{C}>>h_{FE} \cdot R_{B1}$. Il calcolo delle resistenze è relativemte semplice e lo lasciamo di seguito.
+
+!!! RICAVARE RESISTENZE !!!
+
+I valori delle induttanze $L_C$ e $L_B$ sono stati scelti in modo da presentare una frequenza di autorisonanza di $\SI{6}{\giga\hertz}$ appena al di sopra della frequenza di lavoro di $\SI{5}{\giga\hertz}$. Gli induttori reali hanno sempre una capacità parassita parallela (EPC, \it{Equivalent Parallel Capacitance}) dovuta ad esempio alla capacità tra spire di avvolgimenti adiacenti, la frequenza alla quale la reattanza induttiva eguaglia in modulo la reattanza capacitiva dovuta ai parassiti viene chiamata frequenza di autorisonanza. A questa frequenza l'impedenza dell'induttore esplode disaccoppiando in maniera efficiente lo stadio di polarizzazione da quello di segnale.
+Alla frequenza di risonanza:
 \begin{equation}
-    \pdv{q}{t}=0
-\end{equation}
-mentre la variazione di flusso magnetico al di fuori di essi è nulla
-\begin{equation}
-    \pdv{\phi}{t}=0
-\end{equation}
-I parametri circuitali (induttanza, capacità e resistenza) sono concentrati su componenti puntiformi, nella realtà induttori e condensatori hanno una dimensione fisica ma variazioni di flusso magnetico e di carica rimangono confinate in regioni di spazio definite, basta pensare come esempio ad un solenoide in cui si trascurano gli effetti di bordo: il campo magnetico risulta non nullo solo all'interno del solenoide.
-Quando la lunghezza d'onda dei segnali in gioco diventa comparabile con le dimensioni fisiche del circuito non è più possibile affidarsi ad un modello a parametri concentrati ma occorre considerare i conduttori come linee di trasmissioni su cui è possibile avere accumuli di carica locali e campi elettrici e magnetici non nulli necessari alla propagazione dei segnali lungo la linea.
-In una linea di trasmissione i parametri circuitali sono distribuiti lungo la linea e le grandezze elettriche come corrente e tensione variano in ampiezza e fase muovendosi sulla linea secondo un'equazione differenziale caratteristica chiamata equazione dei telegrafisti,
+    \vec{X_C}=\dfrac{-j}{2\pi f C_{EPC}}=-\vec{X_L}=2 \pi j f L
+    \left|\vec{X_{TOT}}\right|=\left|\left(\dfrac{1}{\vec{X_C}}+\dfrac{1}{\vec{X_L}}\right)^{-1}\right|\to\infty
+\end{equation} 
 
-EQ. TELEGR. 
-CIRCUITO LINEA
-
-le grandezze elettriche dipendono dalla capacità e induttanza per unità di lunghezza fissate dalla geometria della linea e da due parametri dissipativi, una conduttanza parallelo che modellizza le perdite nel dielettrico e una resistenza serie associata alle perdite nei conduttori, per semplificare la trattazione si considera spesso una linea senza perdita ($R=G=0$) in questa approssimazione la propagazione di un onda lungo la linea avviene senza attenuazione e la velocità di propagazione dipende solo da $L$ e $C$ e quindi dalla geometria dei conduttori, per riassumere le caratteristiche di una linea senza perdita si fa affidamento alla suo impedenza caratteristica
-\begin{equation}
-    Z_0=\sqrt{\dfrac{L}{C}}
-\end{equation}
-L'impedenza caratteristica è un parametro molto importante ai fini dell'integrità dei segnali a radiofrequenza, due linee con impedenza caratteristica differente avranno due velocità di propagazione diverse, all'interfaccia tra le due questa discontinuità causerà una riflessione dell'onda incidente con conseguenze sia sulla qualità del segnale che sulla potenza trasmessa.
-
-\paragraph{Carta di Smith}
-La carta di Smith è un'utile strumento che è stato utilizzato in maniera ricorrente durante lo sviluppo di questa tesi, la sua utilità deriva dalla semplicità con cui si riescono ad analizzare problemi relativi alle linee di trasmissione.
-Ogni punto del grafico rappresenta un particolare valore di impedenza, le circonferenze disegnate nella carta rappresentano percorsi a resistenza costante (in azzurro) o reattanza costante (in rosso), le impedenze sono normalizzate rispetto un valore di riferimento solitamente di $\SI{50}{\ohm}$ che identifica il centro della carta
-
-\paragraph{Parametri di Scattering}
-
-\section{Progettazione}
-\subsection{Polarizzazione e Punto di Lavoro}
-\subsection{Studio ad Alta Frequenza}
-\paragraph{Stabilità}
-\paragraph{Matching Network e Guadagno}
+\subsection{Stabilità}
 
 
-
-\section{Caratterizzazione}
 
 \section{Conclusione}
 
