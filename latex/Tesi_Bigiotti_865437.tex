@@ -21,7 +21,21 @@ temperatura.
 
 \subsection{Transistor a eterogiunzione SiGe}
 \subsection{Analisi dei circuiti a microonde e linee di trasmissione}
-\section{Amplificatori RF e progettazione}
+\section{Progettazione e realizzazione dello schema}
+\subsection{Struttura di un amplificatore RF}
+La struttura degli amplificatori RF è abbastanza staandard, come per tutti gli amplificatori ci sono fasi di progetto bene distinte ma collegate: lo studio del punto di lavoro e quello di piccolo segnale.
+
+Lo studio del punto di lavoro viene eseguito considerando solo le sorgenti a corrente continua spegnendo tutti i generatori di segnale, permettendo di studiare la polarizzazione dei dispositivi attivi. Lo studio di piccolo segnale ha come obiettivo lo studio dell'amplificatore in una regione linearizzata intorno al punto di lavoro, permette di definire le prestazioni dinamiche dell'amplificatore dopo aver spento tutti i generatori di polarizzazione.
+
+Se consideriamo la parte di segnale possiamo ricavare una struttura a blocchi tipica per tutti gli amplificatori RF che riportiamo in figura,
+
+!!! AMP RF !!!
+
+sono ben evidenziati i due blocchi di adattamento (\textit{Matching Networks}) così come il transistor al centro. ciascuno di questi blocchi può essere visto come un \textit{two port network} caratterizzato da i rispettivi parametri di scattering e da due coefficienti di riflessione, uno per ogni verso di propagazione delle onde incidenti.
+
+Per la progettazione dell'amplificatore torneranno utili i parametri di scattering del transistor, che vengono forniti dal produttore e contribuiscono a determinare i coefficienti di riflessione alle porte del transistor $\Gamma_{in}$ e $\Gamma_{out}$, tutto lo sforzo di progettazione sarà concentrato sulla progettazione delle reti di adattamento che determineranno i valori di $\Gamma_{S}$ e $\Gamma_{L}$.
+
+Nel nostro caso le impedenze della sorgente di segnale e del carico sono tutte calibrate sull'impedenza caratteristica di $Z_{0}\SI{50}{\ohm}$.
 
 \subsection{Punto di Lavoro}
 \label{sub_q_point}
@@ -38,21 +52,85 @@ La rete di polarizzazione è composta di una resistenza di base $R_{B1}$ e una d
 
 I parametri del transistor come $V_{BE}$ e $h_{FE}$ dipendono fortemente dalla temperatura, per stabilizzare il punto di lavoro rispetto a possibili variazioni la rete di polarizzazione include un meccanismo di retroazione positiva. Se a causa di variazioni di $V_{BE}$ o $h_{FE}$ la corrente di collettore aumenta la caduta di tensione su $R_{C}$ aumenta e di conseguenza diminuisce la tensione $V_{BE}$, dall'equazione di Ebers-Molls si ricava che la corrente di collettore deve diminuire ristabilendo l'equilibrio.
 
-!!!Eq di eb molls!!!
+\begin{equation}
+    I_C=I_S(T)\left(e^{V_{BE}/V_T}-1\right)
+\end{equation}
 
 Per rendere questo meccanismo di retroazione effettivo occorre selezionare una resistenza $R_{C}>>h_{FE} \cdot R_{B1}$. Il calcolo delle resistenze è relativemte semplice e lo lasciamo di seguito.
 
 !!! RICAVARE RESISTENZE !!!
 
-I valori delle induttanze $L_C$ e $L_B$ sono stati scelti in modo da presentare una frequenza di autorisonanza di $\SI{6}{\giga\hertz}$ appena al di sopra della frequenza di lavoro di $\SI{5}{\giga\hertz}$. Gli induttori reali hanno sempre una capacità parassita parallela (EPC, \it{Equivalent Parallel Capacitance}) dovuta ad esempio alla capacità tra spire di avvolgimenti adiacenti, la frequenza alla quale la reattanza induttiva eguaglia in modulo la reattanza capacitiva dovuta ai parassiti viene chiamata frequenza di autorisonanza. A questa frequenza l'impedenza dell'induttore esplode disaccoppiando in maniera efficiente lo stadio di polarizzazione da quello di segnale.
+I valori delle induttanze $L_C$ e $L_B$ sono stati scelti in modo da presentare una frequenza di autorisonanza di $\SI{6}{\giga\hertz}$ appena al di sopra della frequenza di lavoro di $\SI{5}{\giga\hertz}$. Gli induttori reali hanno sempre una capacità parassita parallela (EPC, \textit{Equivalent Parallel Capacitance}) dovuta ad esempio alla capacità tra spire di avvolgimenti adiacenti, la frequenza alla quale la reattanza induttiva eguaglia in modulo la reattanza capacitiva dovuta ai parassiti viene chiamata frequenza di autorisonanza. A questa frequenza l'impedenza dell'induttore esplode disaccoppiando in maniera efficiente lo stadio di polarizzazione da quello di segnale.
 Alla frequenza di risonanza:
 \begin{equation}
-    \vec{X_C}=\dfrac{-j}{2\pi f C_{EPC}}=-\vec{X_L}=2 \pi j f L
-    \left|\vec{X_{TOT}}\right|=\left|\left(\dfrac{1}{\vec{X_C}}+\dfrac{1}{\vec{X_L}}\right)^{-1}\right|\to\infty
+    \begin{split}
+        \vec{X_C}=\dfrac{-j}{2\pi f C_{EPC}}=-\vec{X_L}=2 \pi j f L\\
+        \left|\vec{X_{TOT}}\right|=\left|\left(\dfrac{1}{\vec{X_C}}+\dfrac{1}{\vec{X_L}}\right)^{-1}\right|\to\infty 
+    \end{split}
 \end{equation} 
 
 \subsection{Stabilità}
+La progettazione di un amplificatore deve tenere conto delle potenziali instabilità che posso sorgere a causa dei motivi più disparati. In presenza di una instabilità un segnale in ingresso può viene amplificato senza limiti, fin quando l'amplificatore non satura o si danneggia o inizia a oscillare.
 
+Negli amplificatori RF lo studio della stabilità risulta insidioso. Ad alta frequenza esiste il fenomeno delle riflessioni, non tutta la potenza incidente su una porta viene trasmessa, una parte può essere riflessa. Quando si considerano dispositivi attivi è possibile imbattersi in una situazione per cui si ha \textit{reflected gain}, ovvero il segnale riflesso risulta amplificato rispetto a quello incidente.
+
+Se consideriamo la (!!!REF!!!) la presenza di \textit{reflected gain} è data da
+\begin{equation}
+    \left|\Gamma_{in}\right| > 1
+\end{equation}
+\begin{equation}
+    \left|\Gamma_{out}\right| > 1
+\end{equation}
+rispettivamente per le porte di ingresso e uscita del transistor.
+
+Le reti di adattamento vengono solitamente realizzate con elementi passivi, quindi vale
+\begin{equation}
+    \left|\Gamma_{S}\right| < 1
+\end{equation}
+\begin{equation}
+    \left|\Gamma_{L}\right| < 1
+\end{equation}
+
+Per avere una condizione di instabilità devono quindi le seguenti condizioni che impongono la presenza di un guadagno ad anello nella sezione di ingresso o uscita, la condizione sulla fase serve a garantire che avvenga interferenza costruttiva tra i segnali incidenti e riflessi.
+\begin{equation}
+    \left|\Gamma_{in}\Gamma_{S}\right| > 1
+\end{equation}
+\begin{equation}
+    \angle\Gamma_{in}\Gamma_{S} = \SI{0}{\degree}
+\end{equation}
+\begin{equation}
+    \left|\Gamma_{out}\Gamma_{L}\right| > 1
+\end{equation}
+\begin{equation}
+    \angle\Gamma_{out}\Gamma_{L} = \SI{0}{\degree}
+\end{equation}
+
+Studiando il percorso del segnale tra i vari blocchi dell'amplificatore di (REF alla figura) e con un po' di algebra si può ricavare i valori di $\left|\Gamma_{in}\right|$ e $\left|\Gamma_{out}\right|$
+\begin{equation}
+    \left|\Gamma_{in}\right| = \left|S_{11} + \dfrac{S_{12}S_{21}\Gamma_{L}}{1-S_{22}\Gamma_{L}}\right|
+\end{equation}
+\begin{equation}
+    \left|\Gamma_{out}\right| = \left|S_{22} + \dfrac{S_{12}S_{21}\Gamma_{S}}{1-S_{11}\Gamma_{S}}\right|
+\end{equation}
+La cosa interessante che si nota è che i coefficienti di riflessione non dipendono soltanto dai parametri del transistor ma anche dalle reti di adattamento di impedenza, questo perché il segnale incidente sull'ingresso del transistor può essere trasmesso fino all'uscita dove apparirà amplificato, raggiunta la rete di adattamento di uscita solo una parte raggiungerà il carico mentre la rimanente risulterà riflessa e percorrerà la strada opposta fino a presentarsi nuovamente all'ingresso del transistor sommandosi alla potenza riflessa in ingresso e contribuendo a determinare il coefficiente di riflessione. Ragionamento analogo vale per $\Gamma_{out}$. Chairamente tutto questo vale solo se il transistor presenta $\left|S_{12}\right|\neq 0$.
+
+La combinazione dei parametri di scattering per una particolare frequenza e punto di lavoro può essere tale da garantire $\left|\Gamma_{in}\right| < 1$ e $\left|\Gamma_{out}\right| < 1$ indipendentemente dalla scelta di $\Gamma_{L}$ e $\Gamma_{S}$, se questa condizione è verificata si parla di stabilità incodizionata del transistor. Esistono vari test per verificare la stabilità incodizionata noti i parametri di scattering, uno di questi consiste nel verificare che la grandezza
+\begin{equation}
+    \mu = \dfrac{1-\left|S_{22}\right|^2|}{\left|S_{11}-S_{22}^{*}\Delta\right|+\left|S_{21}S_{12}\right|}> 1 \hspace{10pt} \text{con} \hspace{10pt} \Delta=S_{11}S_{22}-S_{21}S_{12}
+\end{equation}
+
+Nel nostro caso è stato possibile valutare $\mu$ lungo tutto lo spettro di frequenze per il transisor BFP640 polarizzato a $I_{C}=\SI{8}{\milli\ampere}$, $V_{CE}=\SI{3.0}{\volt}$ nel range di frequenze da $\SI{30}{\mega\hertz}$ a $\SI{10}{\giga\hertz}$ utilizzando MATLAB, riportiamo il risultato:
+!!!GRAFICO!!!
+Come si può notare per il range di frequenze di nostro interesse fra $\SI{4.5}{\giga\hertz}$ a $\SI{5.5}{\giga\hertz}$ il transistor risulta essere stabile. Si può anche notare il tipico andamento della stabilità del transistor, a basse frequenze il transistor può essere considerato unilatero e la stabilità migliora notevolmente, ad alte frequenze si ha un uguale miglioramento dovuto ad un valore di $S_{21}$ sempre più piccolo.
+
+!!! SECONDO AMP !!!
+
+\subsection{Reti di adattamento e Studio del guadagno}
+
+\subsection{Schema finale}
+
+\section{Progettazione della scheda stampata}
+\section{Analisi dei risultati}
 
 
 \section{Conclusione}
