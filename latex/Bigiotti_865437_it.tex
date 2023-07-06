@@ -1,0 +1,58 @@
+\documentclass[12pt]{article}
+\usepackage[italian]{babel}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{derivative}
+\usepackage{graphicx}
+\usepackage[a4paper, total={6.5in, 10in}]{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+\title{Sviluppo e caratterizzazione di un amplificatore RF per rivelatori criogenici}
+\author{Nicolas Bigiotti\\{\small Matr. 865437}\\{\small Cell. 3452438264 }\\[0.4cm]{\small Relatore: Claudio Gotti}\\{\small Correlatore: Gianluigi Ezio Pessina, Paolo Carniti}}
+
+\date{19-20 Luglio 2023 - Corso di Laurea triennale in Fisica}
+
+
+\begin{document}
+\maketitle
+
+Questo elaborato si pone come obiettivo la realizzazione di un amplificatore in radiofrequenza (RF) con transistor bipolari a eterogiunzione SiGe e la successiva caratterizzazione a bassa temperatura. Amplificatori di questo tipo sono richiesti in molti ambiti sia di ricerca che industriali.
+
+Lo studio dei dispositivi a microonde è reso complesso dalle piccole lunghezze d'onda dei segnali coinvolti, comparabili con le dimensioni fisiche del circuito. Prevedere e studiare il comportamento a temperature molto inferiori a quelle di normale esercizio è complicato dalla mancanza di documentazione ufficiale sui parametri del transistor.
+
+Un tipico amplificatore RF è composto da una rete di ingresso con il compito di adattare l'impedenza del generatore a quella in ingresso del transistor, una rete di uscita per adattare l'impedenza d'uscita del transistor all'impedenza di carico e infine il transistor stesso, che fornisce l'amplificazione. A differenza di quanto accade con dispositivi utilizzati in applicazioni di bassa frequenza, per studiare la risposta di piccolo segnale non viene utilizzato un modello a componenti concentrati, ma è più comodo considerare i parametri di scattering che descrivono trasmissione e riflessione dei segnali elettrici all'ingresso e uscita. Per una tipica configurazione a emettitore comune, come quella usata in questo lavoro tali parametri sono forniti dal costruttore del transistor e sono sfruttati in simulazione per dimensionare le reti di ingresso e uscita.
+
+Il primo passaggio di progettazione consiste nel valutare la stabilità della configurazione. La potenziale instabilità è dovuta alla presenza di una reazione interna al transistor che dipende dalla frequenza e dal punto di lavoro e ad eventuali riflessioni introdotte dalle reti di adattamento. Per il transistor utilizzato selezionando una banda stretta centrata a $\SI{5}{\giga\hertz}$ e polarizzando con una corrente di collettore $I_{C}=\SI{8}{\milli\ampere}$ e una tensione di collettore-emettitore $V_{CE}=\SI{3.0}{\volt}$ è verificata l'ipotesi di stabilità incondizionata, vale a dire che indipendentemente dalle riflessioni introdotte dalle reti di adattamento l'amplificatore risulterà stabile e si ha piena libertà di progettazione di quest'ultime.
+
+Garantita la stabilità si procede progettando le reti di adattamento in modo da ottenere il massimo trasferimento di potenza tra ingresso e uscita alla frequenza di esercizio. Per la realizzazione è stata utilizzata la tecnica a stub singolo che sfrutta segmenti di linea di trasmissione proporzionali in lunghezza a frazioni di lunghezza d'onda del segnale di interesse per ottenere l'adattamento di impedenza voluto. La verifica della stabilità del transitor e il dimensionamento delle reti di adattamento sono stati resi possibili dalla scrittura di alcuni script MATLAB, realizzati grazie ad un toolbox specifico per la progettazione RF.
+Una volta definito lo schema elettrico è stata realizzata la scheda con il software open source KiCad in modo da rendere possibile la produzione del circuito stampato da una azienda specializzata. Una volta ricevuta la scheda, i componenti precedentemente selezionati sono stati montati su di essa.
+
+Con l'ausilio di un analizzatore vettoriale di rete è stata fatta una misura completa dei parametri di scattering del circuito realizzato a temperatura ambiente, osservando un buon accordo con i valori previsti in fase di progetto. Alla frequenza di progetto di $\SI{5}{\giga\hertz}$ le impedenze di ingresso e uscita sono risultate molto vicine a $\SI{50}{\ohm}$, con un guadagno pari a $\SI{12}{\decibel}$. Inoltre è stato possibile verificare la funzionalità dell'amplificatore osservando nel dominio del tempo il segnale di uscita in presenza di una sinusoide in ingresso. Le misure sono state ripetute a temperatura criogenica fino a $\SI{4}{\kelvin}$. L'amplificatore è rimasto funzionante  durante tutto il graduale processo di raffreddamento. Le misure dei parametri di scattering criogenici hanno messo in evidenza l'efficacia delle reti di adattamento anche a bassa temperatura, mentre si è osservata una diminuzione del guadagno del transistor, che si è attestato a circa $\SI{7}{\decibel}$ a $\SI{4}{\kelvin}$.
+
+Sulla stessa scheda è stato sviluppato un secondo amplificatore non più basato sull'uso degli stub. Si è mantenuto lo stesso punto di lavoro precedente per il transistor pari a $I_{C}=\SI{8}{\milli\ampere}$ e $V_{CE}=\SI{3.0}{\volt}$ ma si è deciso di centrare la rete di amplificazione ad una frequenza di lavoro di $\SI{1.6}{\giga\hertz}$. A questa frequenza il transistor potrebbe risultare potenzialmente instabile ed è stato necessario porre maggiore attenzione alla progettazione delle reti di adattamento di impedenza, basate questa volta sull'adozione di componenti discreti e non più stub, in modo da permettere maggiore flessibilità nella sagomatura delle reti di adattamento. Le prestazioni dell'amplificatore sono state misurate a temperatura ambiente e in azoto liquido ottenendo un guadagno di circa $\SI{19}{\decibel}$ in entrambe le condizioni.
+
+In conclusione tre immagini che meglio riassumono il lavoro svolto: (a) la scheda nel suo involucro di rame, (b) e (c) i risultati delle misure a freddo.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/IMG_2169.jpg}
+        \caption{La scheda completa dopo la saldatura e il montaggio nell'involucro metallico necessario per un buon contatto termico con il criostato.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/meas1.png}
+        \caption{Parametri di scattering $S_{11}$, $S_{22}$ e $S_{21}$ misurati a $\approx\SI{4}{\kelvin}$ dell'amplificatore con stub, al guadagno in figura va aggiunta l'attenuazione dei cavi coassiali che risulta oscillare tra i $\SI{5}{\decibel}$ e gli $\SI{8}{\decibel}$.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/LNA_L_77K.png}
+        \caption{Parametri di scattering $S_{11}$, $S_{22}$, $S_{12}$ e $S_{21}$ misurati a $\SI{77}{\kelvin}$ dell'amplificatore con componenti discreti.}
+    \end{subfigure}
+\end{figure}
+
+\end{document}

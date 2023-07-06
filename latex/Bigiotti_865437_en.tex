@@ -1,0 +1,62 @@
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{derivative}
+\usepackage{graphicx}
+\usepackage[a4paper, total={6.5in, 10in}]{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+\title{Design and characterization of an RF amplifier for
+cryogenic detectors}
+
+\author{Nicolas Bigiotti\\{\small Matr. 865437}\\{\small Cell. 3452438264 }\\[0.4cm]{\small Supervisor: Claudio Gotti}\\{\small Co-Supervisor: Gianluigi Ezio Pessina, Paolo Carniti}}
+
+\date{19-20 July 2023 - Bachelor's degree in physics}
+
+
+\begin{document}
+\maketitle
+
+
+This paper aims to realize a radio-frequency (RF) amplifier with SiGe heterojunction bipolar transistors and the subsequent characterization at low temperature. Amplifiers of this type are required in many areas of both research and industry.
+
+The study of microwave devices is made complex by the small wavelengths of the signals involved, comparable with the physical size of the circuit. Predicting and studying behavior at temperatures far below normal operating temperatures is complicated by the lack of documentation of transistor parameters.
+
+A typical RF amplifier consists of an input network with the task of matching the generator impedance to the input impedance of the transistor, an output network to match the output impedance of the transistor to the load impedance, and finally the transistor itself, which provides amplification. Unlike devices used in low-frequency applications, a lumped component model is not used to study small-signal response, but it is more convenient to consider the scattering parameters that describe transmission and reflection of electrical signals at the input and output ports. For a typical common-emitter configuration, such as the one used in this work, these parameters are provided by the transistor manufacturer and are used in simulation to size the input and output networks.
+
+
+The first design step is to evaluate the stability of the configuration. Potential instability is due to the presence of an internal transistor feedback mechanism that depends on the frequency and bias point and any reflections introduced by the matching networks. For the transistor used, selecting a narrow band centered at $\SI{5}{\giga\hertz}$ and biasing with a collector current $I_{C}=\SI{8}{\milli\ampere}$ and a collector-emitter voltage $V_{CE}=\SI{3. 0}{\volt}$ the assumption of unconditional stability is verified, i.e., regardless of the reflections introduced by the matching networks the amplifier will be stable and there is full freedom in the design of the latter.
+
+Having ensured stability, we proceed by designing the matching networks to achieve maximum power transfer between input and output at the operating frequency. For implementation, the single stub technique was used, which uses transmission line segments proportional in length to fractions of the wavelength of the signal of interest to achieve the desired impedance matching. Stability analysis and matching network design were made possible by writing some MATLAB scripts, which were realized thanks to a specific toolbox for RF design.
+Once the schematic was defined, the board was made with the open source software KiCad so that the printed circuit board could be produced by a specialized company. Once the board was received, the previously selected components were mounted on it.
+
+With the aid of a vector network analyzer, a complete measurement of the scattering parameters of the realized circuit was made at room temperature, observing good agreement with the values predicted at the design stage. At the design frequency of $\SI{5}{\giga\hertz}$ the input and output impedances were very close to $\SI{50}{\ohm}$, with a gain of $\SI{12}{\decibel}$. Furthermore, it was possible to verify the functionality of the amplifier by observing in the time domain the output signal in the presence of an input sine wave. The measurements were repeated at cryogenic temperature as low as $\SI{4}{\kelvin}$. The amplifier remained functional throughout the gradual cooling process. Measurements of the cryogenic scattering parameters revealed the effectiveness of the matching networks even at low temperature, while a decrease in transistor gain was observed, which settled at about $\SI{7}{\decibel}$ at $\SI{4}{\kelvin}$.
+
+A second amplifier no longer based on the use of stubs was developed on the same board. The same previous bias point for the transistor equal to $I_{C}=\SI{8}{\milli\ampere}$ and $V_{CE}=\SI{3.0}{\volt}$ was retained, but it was decided to center the amplifier network at a working frequency of $\SI{1.6}{\giga\hertz}$. At this frequency the transistor could potentially be unstable and more attention had to be paid to the design of the impedance matching networks, based this time on the adoption of discrete components rather than stubs, in order to allow more flexibility in shaping the matching networks. The performance of the amplifier was measured at room temperature and in liquid nitrogen, obtaining a gain of approximately $\SI{19}{\decibel}$ in both conditions.
+
+In conclusion three pictures that best summarize the work done: (a) the board in its copper casing, (b) and (c) the results of the low temperature measurements.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/IMG_2169.jpg}
+        \caption{The complete board after soldering and assembly in the metal casing required for good thermal contact with the cryostat.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/meas1.png}
+        \caption{Scattering parameters $S_{11}$, $S_{22}$, and $S_{21}$ measured at $\approx\SI{4}{\kelvin}$ of the amplifier with stub, to the gain in the figure should be added the attenuation of the coaxial cables, which is found to fluctuate between $\SI{5}{\decibel}$ and $\SI{8}{\decibel}$.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.33\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/LNA_L_77K.png}
+        \caption{Scattering parameters $S_{11}$, $S_{22}$, $S_{12}$ and $S_{21}$ measured at $\SI{77}{\kelvin}$ of the amplifier with discrete components.}
+    \end{subfigure}
+\end{figure}
+
+\end{document}
