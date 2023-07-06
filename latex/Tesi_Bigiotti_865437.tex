@@ -126,8 +126,57 @@ Come si può notare per il range di frequenze di nostro interesse fra $\SI{4.5}{
 !!! SECONDO AMP !!!
 
 \subsection{Reti di adattamento e Studio del guadagno}
+Negli amplificatori RF il guadagno totale non dipende solo dal transistor ma anche dalle reti di adattamento che permettono di massimizzare il trasferimento di potenza dalla sorgente al transistor e dal transistor al carico.
+Vengono definiti tre guadagni, $G_P$ rappresenta il rapporto fra la potenza ai capi del transistor e la potenza dissipata sul carico,
+$G_A$ è il rapporto fra la potenza fornita dalla sorgente in ingresso e quella disponibile all'uscita del transistor, infine $G_T$ è il rapporto tra la potenza fornita dalla sorgente e quella che viene dissipata sul carico.
+\begin{equation}
+    G_A = \dfrac{\left|S_{21}\right|^2\left(1-\left|\Gamma_{S}\right|^2\right)}{\left|1-S_{11}\Gamma_{S}\right|^2\left(1-\left|\Gamma_{out}^2\right|\right)}
+\end{equation}
+\begin{equation}
+    G_P = \dfrac{\left|S_{21}\right|^2\left(1-\left|\Gamma_{L}\right|^2\right)}{\left|1-S_{11}\Gamma_{L}\right|^2\left(1-\left|\Gamma_{in}^2\right|\right)}
+\end{equation}
+\begin{equation}
+    G_0 = \left|S_{21}\right|^2
+\end{equation}
+Queste ulteriori definizioni di guadagno sono utili in quanto non dipendono dall'adattamento di ingresso o di uscita nel caso rispettivamento di $G_P$ e $G_A$. Chiaramente il guadagno totale dell'amplificatore $G_T$ è influenzato sia dalle sezioni d'ingresso e d'uscita dell'amplificatore.
 
-\subsection{Schema finale}
+Il transistor ha un suo guadagno intrinseco definito da $S_{21}$, per definizione dei parametri di scattering questo guadagno è ottenuto terminando ingresso e uscita all'impedenza caratteristica di $\SI{50}{\ohm}$. In queste condizioni l'amplificatore è parecchio limitato in termini di guadagno in quanto ad alte frequenze le impedenze di ingresso ed uscita del transistor terminate a $\SI{50}{\ohm}$ riflettono buona parte del segnale da amplificare.
+
+Per risolvere il problema vengono introdotte le reti di adattamento di impedenza che permettono di adattare l'impedenza caratteristica della linea a quelle del transistor. Per ottenere il massimo guadagno viene eseguito un adattamento coniugato, ponendo il coefficiente di riflessione $\Gamma_{L}$ e $\Gamma_{S}$ pari al complesso coniugato rispettivamente di $\Gamma_{in}$ e $\Gamma_{out}$. L'espressioni di $\Gamma_{L}$ e $\Gamma_{S}$ per ottenere adattamento coniugato si ricavano con qualche passaggio algebrico,
+!!! GAMMA IN E...!!!
+
+Nel all'amplificatore con stub l'adattamento di impedenza è stato realizzato con la tecnica a singolo stub. Essendo incodizionatamente stabile è stato possibile perseguire una progettazione per massimo guadagno.
+
+Con MATLAB sono stati ricavati i valori di $\Gamma_{S}$ e $\Gamma_{L}$ noti i valori dei parametri di scattering, una volta rappresentati sulla carta di Smith si può procedere al dimensionamento delle linee di trasmissione. 
+
+!!!DA CONCLUDERE!!!
+
+Il procedimento è leggermente diverso per il secondo amplificatore, avendo definito nella sezione precedente le zone stabili si può procedere con lo studio del guadagno.
+In questo caso vogliamo realizzare un amplificatore che abbia un guadagno di $G_T=\SI{22}{\decibel}$, esistono varie combinazioni di $G_P$ e $G_A$ che permettono di ottenere lo stesso risultato, in questo caso abbiamo scelto $G_P=\SI{25}{\decibel}$ e $G_A=\SI{22}{\decibel}$, sono stati quindi disegnate le due circoferenze che individuano tutti i coefficienti di riflessione $\Gamma_{S}$ e $\Gamma_{L}$ che permettono di ottenere rispettivamente i valori $G_P$ e $G_A$ voluti.
+
+!!!IMMAGINE MATLAB!!!
+
+Il valore esatto dei due coefficienti di riflessione andrebbe scelto con riguardo a considerazioni di rumore che però andavano oltre lo scopo di questo elaborato, la scelta è stata quindi dettata da ragioni di tipo pratico, riportiamo i due diagrammi di smith relativi rispettivamente alla rete di ingresso e di uscita.
+
+!!! MATCHING !!!
+
+Il risultato simultato dei parametri di scattering è stato ottenuto con MATLAB e lo riportiamo di seguito
+
+!!! GRAFICO !!!
+
+Si può notare il guadagno pari a $\approx\SI{22}{\decibel}$ alla frequenza di progetto, non trattandosi di un amplificatore progettato per il massimo guadagno $S_{11}$ e $S_{22}$ presentano un modulo leggermente più grande rispetto al caso precedente.
+
+% Riprendendo la figura (!!!REF!!!) si possono assegnare tre guadagni così definiti
+% \begin{equation}
+%     G_S = \dfrac{1-\left|\Gamma_{S}\right|^2}{\left|1-S_{11}\Gamma_{S}\right|^2}
+% \end{equation}
+% \begin{equation}
+%     G_L = \dfrac{1-\left|\Gamma_{L}\right|^2}{\left|1-S_{22}\Gamma_{L}\right|^2}
+% \end{equation}
+% \begin{equation}
+%     G_0 = \left|S_{21}\right|^2
+% \end{equation}
+% \subsection{Schema finale}
 
 \section{Progettazione della scheda stampata}
 \section{Analisi dei risultati}
