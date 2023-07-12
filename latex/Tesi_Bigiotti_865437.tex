@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[12pt,oneside]{book}
 \usepackage[italian]{babel}
 \usepackage{amsmath}
 \usepackage{siunitx}
@@ -9,81 +9,250 @@
 \usepackage{subcaption}
 \usepackage{float}
 \usepackage{derivative}
+\usepackage{svg}
+\usepackage{geometry}
 
+\DeclareSIUnit{\belmilliwatt}{Bm}
+\DeclareSIUnit{\dBm}{\deci\belmilliwatt}
+
+
+
+
+
+
+%\title{}
+%\author{Nicolas Bigiotti\\{\small Matr. 865437}\\{\small Cell. 3452438264 }\\[0.4cm]{\small Relatore: Claudio Gotti}\\{\small Correlatore: Gianluigi Ezio Pessina, Paolo Carniti}}
+%
+%\date{19-20 Luglio 2023 - Corso di Laurea triennale in Fisica}
+%
 \begin{document}
-\section{Introduzione}
-\subsection{Motivazione e Contesto}
+
+\newgeometry{centering}
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+            
+        \Huge
+        \textbf{Sviluppo e caratterizzazione di un amplificatore RF per rivelatori criogenici}
+            
+        \vspace{0.5cm}
+        \LARGE
+            
+        \vspace{1.5cm}
+            
+        \textbf{Nicolas Bigiotti}
+            
+        \vfill
+
+        
+        Relatore: Claudio Gotti \hspace{30pt} \dotfill\\
+        Correlatore: Gianluigi Ezio Pessina, Paolo Carniti
+            
+        \vspace{0.8cm}
+
+        Corso di Laurea triennale in Fisica
+            
+        \vspace{0.8cm}
+            
+        \includegraphics[width=0.4\textwidth]{img/WEB/unimib.jpg}
+
+            
+        \Large
+        19 Luglio 2023
+            
+    \end{center}
+\end{titlepage}
+\restoregeometry 
+
+\tableofcontents
+
+\chapter{Introduzione}
+\section{Motivazione e Contesto}
 Negli ultimi decenni si è visto un notevole sviluppo della tecnologia legata ai sistemi a microonde dovuta a crescenti necessità sia industriali che di ricerca.
 Quantum computing, radioastronomia e comunicazioni satellitari sono alcuni dei campi più importanti dove dispositivi a microonde devono lavorare a temperature
-criogeniche, questa tesi triennale si pone come scopo quello di introdurre ai concetti fondamentali della progettazione nel campo delle microonde necessari per
-la progettazione e la successiva caratterizzazione di un semplice amplificatore RF, a titolo esplorativo verranno valutate anche le caratteristiche a bassa
+criogeniche. Questo elaborato si pone come obiettivo quello di introdurre ai concetti fondamentali della progettazione nel campo delle microonde necessari per
+la realizzazione e successiva caratterizzazione di un semplice amplificatore RF. A titolo esplorativo verranno valutate anche le caratteristiche a bassa
 temperatura.
 
-\subsection{Transistor a eterogiunzione SiGe}
-\subsection{Analisi dei circuiti a microonde e linee di trasmissione}
-\section{Progettazione e realizzazione dello schema}
-\subsection{Struttura di un amplificatore RF}
-La struttura degli amplificatori RF è abbastanza staandard, come per tutti gli amplificatori ci sono fasi di progetto bene distinte ma collegate: lo studio del punto di lavoro e quello di piccolo segnale.
+\section{Linee di Trasmissione}
+L'analisi dei dispositivi a microonde richiede un cambio di paradigma rispetto alla teoria dei circuiti classica, lo studio dell'elettronica a bassa frequenza si basa sull'applicazione delle Leggi di Kirchhoff ottenute come approssimazione delle equazioni di Maxwell sotto opportune condizioni che vengono identificate con il modello a parametri concentrati.
+Nel modello a parametri concentrati i conduttori che formano le interconnessioni fra i componenti vengono considerati ideali, su di essi non si ha alcuna variazione di carica (la carica fluisce senza che si accumuli lungo i conduttori per effetti capacitivi) e la variazione di flusso magnetico al di fuori di essi è nulla.
+\begin{equation}
+    \pdv{q}{t}=0
+\end{equation}
 
-Lo studio del punto di lavoro viene eseguito considerando solo le sorgenti a corrente continua spegnendo tutti i generatori di segnale, permettendo di studiare la polarizzazione dei dispositivi attivi. Lo studio di piccolo segnale ha come obiettivo lo studio dell'amplificatore in una regione linearizzata intorno al punto di lavoro, permette di definire le prestazioni dinamiche dell'amplificatore dopo aver spento tutti i generatori di polarizzazione.
+\begin{equation}
+    \pdv{\phi}{t}=0
+\end{equation}
+I parametri circuitali (induttanza, capacità e resistenza) sono concentrati su componenti puntiformi. Nella realtà induttori e condensatori hanno una dimensione fisica ma le variazioni di flusso magnetico e di carica rimangono confinate in regioni di spazio definite, basta pensare come esempio ad un solenoide in cui si trascurano gli effetti di bordo: il campo magnetico risulta non nullo solo all'interno del solenoide.
+Quando la lunghezza d'onda dei segnali in gioco diventa comparabile con le dimensioni fisiche del circuito non è più possibile affidarsi ad un modello a parametri concentrati, ma occorre considerare i conduttori come linee di trasmissione su cui è possibile avere accumuli di carica locali e campi elettrici e magnetici non nulli necessari alla propagazione dei segnali lungo la linea.
+In una linea di trasmissione i parametri circuitali sono distribuiti lungo la linea che viene solitamente schematizzata come in figura.
+\begin{figure}[!htbp]
+    \centering
+    \includesvg[width=0.6\textwidth]{img/WEB/Transmission_line_element.svg}
+    \caption{Schema a parametri concentrati di una sezione di lunghezza $dx$ di una generica linea di trasmissione.}
+\end{figure} 
+A differenza di quanto avviene in in una trattazione a parametri concentrati, le grandezze elettriche come corrente e tensione variano in ampiezza e fase muovendosi lungo la linea secondo un'equazione differenziale caratteristica chiamata equazione dei telegrafisti, che riportiamo di seguito.
 
-Se consideriamo la parte di segnale possiamo ricavare una struttura a blocchi tipica per tutti gli amplificatori RF che riportiamo in figura,
+\begin{equation}
+    \pdv{V(x,t)}{x}=-L\pdv{I(x,t)}{t}-RI(x,t)
+    \label{tel_eq_V}
+\end{equation} 
 
-!!! AMP RF !!!
+\begin{equation}
+    \pdv{I(x,t)}{x}=-C\pdv{V(x,t)}{t}-GV(x,t)
+    \label{tel_eq_I}
+\end{equation} 
 
-sono ben evidenziati i due blocchi di adattamento (\textit{Matching Networks}) così come il transistor al centro. ciascuno di questi blocchi può essere visto come un \textit{two port network} caratterizzato da i rispettivi parametri di scattering e da due coefficienti di riflessione, uno per ogni verso di propagazione delle onde incidenti.
+
+
+
+
+Come si è potuto notare sia dallo schema elettrico che dall'eq. \eqref{tel_eq_V} e \eqref{tel_eq_I} sono quattro i parametri circuitali utilizzati per definire la linea di trasmissione. Capacità e induttanza per unità di lunghezza sono fissate dalla geometria della linea, esistono poi due parametri dissipativi, una conduttanza parallelo che modellizza le perdite nel dielettrico e una resistenza serie associata alle perdite nei conduttori. I componenenti conservativi sono tipici di qualsiasi linea di trasmissione, i componenti dissipativi al contrario vengono spesso considerati trascurabili per semplificare la trattazione ottenendo una linea senza perdita ($R=G=0$), tipica di applicazioni di piccolo segnale. In questa approssimazione la propagazione di un onda lungo la linea avviene senza attenuazione e la velocità di propagazione dipende solo da $L$ e $C$ e quindi dalla geometria dei conduttori. Per riassumere le caratteristiche di una linea senza perdita si fa affidamento alla sua impedenza caratteristica che viene definita dall'equazione di seguito.
+\begin{equation}
+    Z_0=\sqrt{\dfrac{L}{C}}
+\end{equation}
+
+L'impedenza caratteristica è un parametro molto importante ai fini dell'integrità dei segnali a radiofrequenza, due linee con impedenza caratteristica differente avranno due velocità di propagazione diverse, all'interfaccia tra le due la presenza di una discontinuità causerà una riflessione dell'onda incidente con conseguenze sia sulla qualità del segnale che sulla potenza trasmessa.
+
+\section{Microstrip}
+La propagazione di segnali elettrici a radiofrequenza richiede linee di trasmissione con impedenza caratteristica solitamente di $\SI{50}{\ohm}$, una linea di trasmissione largamente usate sulle schede elettroniche è quella microstip. Una linea microstrip è formata semplicemente da una traccia conduttrice separata da un piano posto a massa da un materiale dielettrico, come si può vedere dall'esempio nella figura seguente.
+
+\begin{figure}[!htbp]
+    \centering
+        \includegraphics[width=0.6\textwidth]{img/WEB/Microstrip_scheme.png}
+    \caption{}
+\end{figure}
+
+L'impedenza della linea è data dalla sua geometria e dalle proprietà del dielettrico, parte delle linee di campo elettrico e magnetico sono in aria, viene quindi introdotto un valore di costante dielettrica efficace ottenuta considerando la microstrip immersa in maniera omogenea in un mezzo con proprietà medie fra quelle dell'aria e del substrato. Gli altri parametri che influenzano la risposta della microstrip sono parametri meccanici che ne descrivono la geometria.
+%\begin{equation}
+%    \approx
+%\end{equation}
+%Nella scheda realizzata è stato usato come substrato dielettrico ROGERS RO4350B, un laminato adatto agli usi ad alta frequenza, conoscendo le caratteristiche elettriche del materiale sapendo lo spessore della scheda è stato possibile calcolare la larghezza delle tracce per ottenere una linea con impedenza caratteristica di $\SI{50}{\ohm}$ che è risultata pari a $\SI{1.72}{\milli\meter}$.
+
+
+\section{Carta di Smith e adattamento di impedenza}
+
+La carta di Smith è un'utile strumento utilizzato in maniera ricorrente durante lo sviluppo di questo elaborato e del progetto realizzato, la sua utilità deriva dalla semplicità con cui si riescono ad analizzare problemi relativi alle linee di trasmissione.
+Ogni punto del grafico rappresenta un particolare valore di impedenza, le circonferenze disegnate nella carta rappresentano percorsi a resistenza costante (in azzurro) o reattanza costante (in rosso), le impedenze sono normalizzate rispetto un valore di riferimento solitamente di $\SI{50}{\ohm}$ che identifica il centro della carta e coincide con l'impedenza caratteristica del sistema in analisi.
+
+\begin{figure}[!htbp]
+    \centering
+        \includegraphics[width=0.6\textwidth]{img/WEB/Smith1_Fig4.png}
+        \caption{}
+\end{figure}
+
+Un problema ricorrente è quello dell'adattamento di impedenza, i sistemi RF lavorano con sorgenti di segnale e linee di trasmissione con una impedenza caratteristica, per ottenere massimo trasferimento di potenza occorre che tutti i valori di impedenza coincidano con quella caratteristica. Spesso accade che il carico che si vuole alimentare ha un'impedenza molto diversa da quella caratteristica per come è realizzato. In questi casi ci viene in aiuto la carta di Smith, infatti il valore di impedenza del carico può essere rappresentato sulla carta individuando l'intersezione tra le circonferenze a reattanza e resistenza costante che lo rappresentano. Individuata l'impedenza che si vuole adattare si prosegue scegliendo la tecnica di matching che si vuole utilizzare.
+
+Per un matching con componenti discreti occorre tenere a mente che l'aggiunta di una capacità in serie permette di spostarsi in senso antiorario lungo le circonferenze a resistenza costante. Al contrario una capacità verso massa fa spostare l'impedenza in senso orario lungo circonferenze a conduttanza costante. Le induttanze hanno un comportamento esattamente opposto.
+
+In base a dove si trova l'impedenza che vogliamo adattare sono disponibili varie scelte alternative per realizzare matching che corrispondo a diversi percorsi sulla carta di Smith che uniscono il centro del diagramma con il punto corrispondente all'impedenza da adattare. Non tutte le scelte teoricamente possibili sono praticamente realizzabili.
+
+Un'altra possibilità per il matching è quella di utilizzare segmenti di linea di trasmissione cortocircuitati o aperti connessi in serie o in parallelo. Siccome in questo elaborato è stato utilizzata soltanto una tecnica con stub aperto in parallelo, daremo una breve introduzione a riguardo.
+
+Questa tecnica si realizza aggiungendo un segmento di linea di trasmissione, chiamato stub, che si sviluppa perpendicolarmente a quella principale che trasporta i segnali elettrici. I parametri che determinano l'adattamento di impedenza sono la lunghezza dello stub e la distanza sulla linea principale tra lo stub e il carico da adattare.
+
+%!!! MANCA !!!
+
+
+
+\section{Parametri di Scattering}
+Una delle difficolta che si incontra nello studio dei sistemi RF è la definizione delle grandezze elettriche in un particolare nodo del circuito, a causa della presenza concorrente di segnali che propagano in versi opposti.
+
+Il concetto fondamentale da cui partire è quello di rete, ovvero un'insieme di componenti che formano un circuito e che si presentano all'esterno attraverso un certo numero terminali accoppiati in porte.
+
+Le reti vengono classificate in vari modi, il più immediato è attraverso il numero di porte, l'amplificatore oggetto di questo elaborato è composto da due porte individuate dai due connettori di ingresso e uscita, ma è possibile avere reti ad una porta così come a $N$ porte.
+
+%!!! AGGIUNGERE PARTE SU RECIPROCITA ECC? !!!
+
+Nel descrivere i circuiti nel campo delle microonde vengono spesso utilizzati i parametri di scattering. Questo approccio assume che segnali elettrici di tensione o corrente abbiano un comportamento ondulatorio, per ogni porta $i$ è possibile definire una tensione incidente e riflessa con ampiezze rispettivamente $V_{i}^{+}$ e $V_{i}^{-}$, da queste ampiezze è possibile definire i parametri di scattering.
+\begin{equation}
+    S_{ij} = \dfrac{V_{i}^{+}}{V_{j}^{-}} \hspace{10pt} \text{con tutte le porte $k \neq j$ terminate a $Z_0$}
+\end{equation}
+
+Una volta ricavati i parametri di scattering in via analitica o misurati, la rete è completamente descritta dalla matrice di scattering che mette in relazione ampiezza delle tensioni incidenti e riflesse.
+
+%DA AMPLIARE SE POSSIBILE
+
+
+\chapter{Progettazione e realizzazione dello schema}
+\section{Struttura di un amplificatore RF}
+La struttura degli amplificatori RF è abbastanza standard, come per tutti gli amplificatori ci sono fasi di progetto ben distinte ma collegate: lo studio del punto di lavoro e quello di piccolo segnale.
+
+Lo studio del punto di lavoro viene eseguito considerando solo le sorgenti a corrente continua spegnendo tutti i generatori di segnale, ovvero sostituendoli con dei corto circuiti se sorgenti  di tensione o circuiti aperti se sorgenti di corrente,, permettendo di studiare la polarizzazione dei dispositivi attivi.
+Lo studio di piccolo segnale ha come obiettivo l'analisi dell'amplificatore in una regione linearizzata intorno al punto di lavoro. In questa fase si procede spegnendo tutti i generatori di polarizzazione e sostituendo ai componenti del circuito modelli equivalenti di piccolo segnale.
+
+Se isoliamo la parte di circuito di piccolo segnale possiamo ricavare una struttura a blocchi tipica per tutti gli amplificatori RF che riportiamo in figura \ref{amp_sist}.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{img/WEB/AmplifierSystem.png}
+    \caption{}
+    \label{amp_sist}
+\end{figure}
+Sono ben evidenziati i due blocchi di adattamento (\textit{Matching Networks}) all'ingresso e all'uscita, così come il transistor al centro. Ciascuno di questi blocchi può essere visto come un \textit{two port network} caratterizzato dai rispettivi parametri di scattering e da due coefficienti di riflessione per ogni porta, uno per ogni verso di propagazione delle onde incidenti, questi risulteranno particolarmente importanti nello studio delle reti di adattamento di impedenza.
 
 Per la progettazione dell'amplificatore torneranno utili i parametri di scattering del transistor, che vengono forniti dal produttore e contribuiscono a determinare i coefficienti di riflessione alle porte del transistor $\Gamma_{in}$ e $\Gamma_{out}$, tutto lo sforzo di progettazione sarà concentrato sulla progettazione delle reti di adattamento che determineranno i valori di $\Gamma_{S}$ e $\Gamma_{L}$.
 
-Nel nostro caso le impedenze della sorgente di segnale e del carico sono tutte calibrate sull'impedenza caratteristica di $Z_{0}\SI{50}{\ohm}$.
+Nel nostro caso le impedenze della sorgente di segnale e del carico sono tutte calibrate sull'impedenza caratteristica di $Z_{0}=\SI{50}{\ohm}$.
 
-\subsection{Punto di Lavoro}
+\section{Punto di Lavoro}
 \label{sub_q_point}
-La realizzazione di amplificatori operanti nel range delle microonde parte da una livello comune a tutti gli amplificatori: la scelta del punto di lavoro. Per poter operare correttamente e fornire un guadagno adeguato occorre polarizzare il dispositivo attivo che alimenta il nostro amplificatore, vanno quindi definite le correnti assorbite e le tensioni ai capi del transistor in condizioni statiche.
+La realizzazione di amplificatori operanti nel range delle microonde parte da una livello comune a tutti gli amplificatori: la scelta del punto di lavoro. Per poter operare correttamente e fornire un guadagno adeguato occorre polarizzare il dispositivo attivo che costituisce il nostro amplificatore, vanno quindi definite le correnti assorbite e le tensioni ai capi del transistor in condizioni statiche.
 
-La polarizzazione dei transistor SiGe può essere trattata analogamente a quella dei normali BJT, considerando una configurazione ad emettitore comune in cui il terminale di connettore i due parametri principali che caratterizzano la risposta di piccolo segnale e che individuano il punto di lavoro sono la corrente assorbita dal collettore $I_C$ e la tensione fra collettore ed emettitore $V_{CE}$. Queste due variabili influenzano le prestazioni in termini di rumore, risposta in frequenza del transistor, guadagno, stabilità e dissipazione di potenza, ai fini di questa tesi solo le ultime due caratteristiche hanno condizionato la scelta della polarizzazione.
+La polarizzazione dei transistor SiGe può essere trattata analogamente a quella dei normali BJT, considerando una configurazione ad emettitore comune in cui il terminale di emettitore è posto a massa, i due parametri principali che caratterizzano la risposta di piccolo segnale e che individuano il punto di lavoro sono la corrente fluente nel collettore $I_C$ e la tensione fra collettore ed emettitore $V_{CE}$. Queste due variabili influenzano le prestazioni in termini di rumore, risposta in frequenza del transistor, guadagno, stabilità e dissipazione di potenza. Ai fini di questo elaborato solo le ultime due caratteristiche hanno condizionato la scelta della polarizzazione.
 
 Definiti da progetto $I_{C}=\SI{8}{\milli\ampere}$, $V_{CE}=\SI{3.0}{\volt}$ e la tensione di alimentazione $V_{CC}=\SI{6}{\volt}$ e ricavati da datasheet la tensione base-collettore $V_{BE} = \SI{0.8}{\volt}$ e il guadagno statico di corrente $h_{FE} = \dfrac{I_C}{I_B}=160$ è stato possibile determinare la rete di polarizzazione che riportiamo di seguito:
 
-!!!RETE DI POLSRIZZAZIONE!!!
+\begin{figure}[!htbp]
+    \centering
+        \includegraphics[width=0.5\textwidth]{img/PCB/tesina_pol.png}
+        \caption{}
+    \hfill
+\end{figure}
 
 \paragraph{Analisi della rete di polarizzazione}
-La rete di polarizzazione è composta di una resistenza di base $R_{B1}$ e una di collettore $R_C$ che regolano rispettivamente tensione e corrente di base e di collettore, è presente anche una terza resistenza $R_{B2}$ che permette di variare la corrente di base indipendentemente dalla tensione di collettore. I due induttori $L_C$ e $L_B$ servono a fornire un percorso a bassa resistenza a corrente continua e ad alta impedenza alla frequenza di esercizio disaccoppiando il circuito di polarizzazione da quello di segnale.
+La rete di polarizzazione è composta di una resistenza di base $R_{14}$ e una di collettore $R_{15}$ che regolano rispettivamente tensione e corrente di base e di collettore, è presente anche una terza resistenza $R_{13}$ che permette di variare la corrente di base indipendentemente dalla tensione di collettore. I due induttori $L_6$ e $L_5$ servono a fornire un percorso a bassa resistenza a corrente continua e ad alta impedenza alla frequenza di esercizio disaccoppiando il circuito di polarizzazione da quello di segnale. Per semplificare la trattazione entrambi gli amplificatori progettati condividono la stessa polarizzazione
 
-I parametri del transistor come $V_{BE}$ e $h_{FE}$ dipendono fortemente dalla temperatura, per stabilizzare il punto di lavoro rispetto a possibili variazioni la rete di polarizzazione include un meccanismo di retroazione positiva. Se a causa di variazioni di $V_{BE}$ o $h_{FE}$ la corrente di collettore aumenta la caduta di tensione su $R_{C}$ aumenta e di conseguenza diminuisce la tensione $V_{BE}$, dall'equazione di Ebers-Molls si ricava che la corrente di collettore deve diminuire ristabilendo l'equilibrio.
+I parametri del transistor come $V_{BE}$ e $h_{FE}$ dipendono fortemente dalla temperatura, per stabilizzare il punto di lavoro rispetto a possibili variazioni la rete di polarizzazione include un meccanismo di retroazione negativa. A livello descrittivo si può descrivere il funzionamento. Se a causa di variazioni di $V_{BE}$ o $h_{FE}$ la corrente di collettore aumenta, essendo la tensione di alimentazione costante la caduta di tensione su $R_{15}$ aumenta dalla legge di Ohm e di conseguenza diminuisce la tensione $V_{BE}$. La tensione sulla giunzione base-collettore $V_{BE}$ regola secondo l'equazione di Ebers-Molls (che è riportata di seguito) la corrente di collettore, che quindi tenderà a diminuire riportando il sistema all'equilibrio.
 
 \begin{equation}
     I_C=I_S(T)\left(e^{V_{BE}/V_T}-1\right)
 \end{equation}
 
-Per rendere questo meccanismo di retroazione effettivo occorre selezionare una resistenza $R_{C}>>h_{FE} \cdot R_{B1}$. Il calcolo delle resistenze è relativemte semplice e lo lasciamo di seguito.
+%CALCOLO RESISTENZE
+%
+%\begin{equation}
+%    f
+%\end{equation}
 
-!!! RICAVARE RESISTENZE !!!
 
-I valori delle induttanze $L_C$ e $L_B$ sono stati scelti in modo da presentare una frequenza di autorisonanza di $\SI{6}{\giga\hertz}$ appena al di sopra della frequenza di lavoro di $\SI{5}{\giga\hertz}$. Gli induttori reali hanno sempre una capacità parassita parallela (EPC, \textit{Equivalent Parallel Capacitance}) dovuta ad esempio alla capacità tra spire di avvolgimenti adiacenti, la frequenza alla quale la reattanza induttiva eguaglia in modulo la reattanza capacitiva dovuta ai parassiti viene chiamata frequenza di autorisonanza. A questa frequenza l'impedenza dell'induttore esplode disaccoppiando in maniera efficiente lo stadio di polarizzazione da quello di segnale.
-Alla frequenza di risonanza:
+%QUI Cé un problema le induttanze di disaccoppiamento sono a caso per l'ampli a 1.6ghz%
+Le induttanze $L_6$ e $L_5$ sono state selezionate in modo da presentare una frequenza di autorisonanza di $\SI{6}{\giga\hertz}$ appena al di sopra della frequenza di lavoro di $\SI{5}{\giga\hertz}$. Gli induttori reali hanno sempre una capacità parassita parallela (EPC, \textit{Equivalent Parallel Capacitance}) dovuta, ad esempio, alla capacità tra spire di avvolgimenti adiacenti. La frequenza alla quale la reattanza induttiva eguaglia in modulo la reattanza capacitiva dovuta ai parassiti viene chiamata frequenza di autorisonanza. A questa frequenza l'impedenza dell'induttore esplode disaccoppiando in maniera efficiente lo stadio di polarizzazione da quello di segnale.
+
+Per un'induttore alla frequenza di risonanza:
 \begin{equation}
     \begin{split}
-        \vec{X_C}=\dfrac{-j}{2\pi f C_{EPC}}=-\vec{X_L}=2 \pi j f L\\
+        \vec{X_C}=\dfrac{-i}{2\pi f C_{EPC}}=-\vec{X_L}=2 \pi i f L\\
         \left|\vec{X_{TOT}}\right|=\left|\left(\dfrac{1}{\vec{X_C}}+\dfrac{1}{\vec{X_L}}\right)^{-1}\right|\to\infty 
     \end{split}
 \end{equation} 
 
-\subsection{Stabilità}
-La progettazione di un amplificatore deve tenere conto delle potenziali instabilità che posso sorgere a causa dei motivi più disparati. In presenza di una instabilità un segnale in ingresso può viene amplificato senza limiti, fin quando l'amplificatore non satura o si danneggia o inizia a oscillare.
+\section{Stabilità}
+La progettazione di un amplificatore deve tenere conto delle potenziali instabilità che possono sorgere a causa dei motivi più disparati. In presenza di una instabilità un segnale in ingresso può venire amplificato senza limiti, fin quando l'amplificatore non satura, si danneggia o inizia ad oscillare.
 
 Negli amplificatori RF lo studio della stabilità risulta insidioso. Ad alta frequenza esiste il fenomeno delle riflessioni, non tutta la potenza incidente su una porta viene trasmessa, una parte può essere riflessa. Quando si considerano dispositivi attivi è possibile imbattersi in una situazione per cui si ha \textit{reflected gain}, ovvero il segnale riflesso risulta amplificato rispetto a quello incidente.
 
-Se consideriamo la (!!!REF!!!) la presenza di \textit{reflected gain} è data da
+Riprendendo la figura \ref{amp_sist} la presenza di \textit{reflected gain} è data dalle seguenti disuguaglianze, rispettivamente per le porte di ingresso e uscita del transistor.
+
 \begin{equation}
     \left|\Gamma_{in}\right| > 1
 \end{equation}
 \begin{equation}
     \left|\Gamma_{out}\right| > 1
 \end{equation}
-rispettivamente per le porte di ingresso e uscita del transistor.
 
-Le reti di adattamento vengono solitamente realizzate con elementi passivi, quindi vale
+Le reti di adattamento vengono solitamente realizzate con elementi passivi, quindi vale quanto segue.
 \begin{equation}
     \left|\Gamma_{S}\right| < 1
 \end{equation}
@@ -91,7 +260,7 @@ Le reti di adattamento vengono solitamente realizzate con elementi passivi, quin
     \left|\Gamma_{L}\right| < 1
 \end{equation}
 
-Per avere una condizione di instabilità devono quindi le seguenti condizioni che impongono la presenza di un guadagno ad anello nella sezione di ingresso o uscita, la condizione sulla fase serve a garantire che avvenga interferenza costruttiva tra i segnali incidenti e riflessi.
+Per avere una condizione di instabilità devono quindi essere verificate le seguenti condizioni che impongono la presenza di un guadagno ad anello nella sezione di ingresso o uscita. La condizione sulla fase serve a garantire che avvenga interferenza costruttiva tra i segnali incidenti e riflessi.
 \begin{equation}
     \left|\Gamma_{in}\Gamma_{S}\right| > 1
 \end{equation}
@@ -105,30 +274,46 @@ Per avere una condizione di instabilità devono quindi le seguenti condizioni ch
     \angle\Gamma_{out}\Gamma_{L} = \SI{0}{\degree}
 \end{equation}
 
-Studiando il percorso del segnale tra i vari blocchi dell'amplificatore di (REF alla figura) e con un po' di algebra si può ricavare i valori di $\left|\Gamma_{in}\right|$ e $\left|\Gamma_{out}\right|$
+Studiando il percorso del segnale tra i vari blocchi dell'amplificatore di figura \ref{amp_sist} e con un po' di algebra si può ricavare i valori di $\left|\Gamma_{in}\right|$ e $\left|\Gamma_{out}\right|$.
 \begin{equation}
     \left|\Gamma_{in}\right| = \left|S_{11} + \dfrac{S_{12}S_{21}\Gamma_{L}}{1-S_{22}\Gamma_{L}}\right|
 \end{equation}
 \begin{equation}
     \left|\Gamma_{out}\right| = \left|S_{22} + \dfrac{S_{12}S_{21}\Gamma_{S}}{1-S_{11}\Gamma_{S}}\right|
 \end{equation}
-La cosa interessante che si nota è che i coefficienti di riflessione non dipendono soltanto dai parametri del transistor ma anche dalle reti di adattamento di impedenza, questo perché il segnale incidente sull'ingresso del transistor può essere trasmesso fino all'uscita dove apparirà amplificato, raggiunta la rete di adattamento di uscita solo una parte raggiungerà il carico mentre la rimanente risulterà riflessa e percorrerà la strada opposta fino a presentarsi nuovamente all'ingresso del transistor sommandosi alla potenza riflessa in ingresso e contribuendo a determinare il coefficiente di riflessione. Ragionamento analogo vale per $\Gamma_{out}$. Chairamente tutto questo vale solo se il transistor presenta $\left|S_{12}\right|\neq 0$.
+La cosa interessante che si nota è che i coefficienti di riflessione non dipendono soltanto dai parametri del transistor, ma anche dalle reti di adattamento di impedenza, questo perché il segnale incidente sull'ingresso del transistor può essere trasmesso fino all'uscita dove apparirà amplificato, raggiunta la rete di adattamento di uscita solo una parte raggiungerà il carico mentre la rimanente risulterà riflessa e percorrerà la strada opposta fino a presentarsi nuovamente all'ingresso del transistor sommandosi alla potenza riflessa in ingresso e contribuendo a determinare il coefficiente di riflessione. Ragionamento analogo vale per $\Gamma_{out}$. Chairamente tutto questo vale solo se il transistor presenta $\left|S_{12}\right|\neq 0$.
 
-La combinazione dei parametri di scattering per una particolare frequenza e punto di lavoro può essere tale da garantire $\left|\Gamma_{in}\right| < 1$ e $\left|\Gamma_{out}\right| < 1$ indipendentemente dalla scelta di $\Gamma_{L}$ e $\Gamma_{S}$, se questa condizione è verificata si parla di stabilità incodizionata del transistor. Esistono vari test per verificare la stabilità incodizionata noti i parametri di scattering, uno di questi consiste nel verificare che la grandezza
+La combinazione dei parametri di scattering per una particolare frequenza e punto di lavoro può essere tale da garantire $\left|\Gamma_{in}\right| < 1$ e $\left|\Gamma_{out}\right| < 1$ indipendentemente dalla scelta di $\Gamma_{L}$ e $\Gamma_{S}$, se questa condizione è verificata si parla di stabilità incodizionata del transistor. Esistono vari test per verificare la stabilità incodizionata noti i parametri di scattering, uno di questi consiste nel verificare la seguente condizione.
 \begin{equation}
     \mu = \dfrac{1-\left|S_{22}\right|^2|}{\left|S_{11}-S_{22}^{*}\Delta\right|+\left|S_{21}S_{12}\right|}> 1 \hspace{10pt} \text{con} \hspace{10pt} \Delta=S_{11}S_{22}-S_{21}S_{12}
 \end{equation}
 
-Nel nostro caso è stato possibile valutare $\mu$ lungo tutto lo spettro di frequenze per il transisor BFP640 polarizzato a $I_{C}=\SI{8}{\milli\ampere}$, $V_{CE}=\SI{3.0}{\volt}$ nel range di frequenze da $\SI{30}{\mega\hertz}$ a $\SI{10}{\giga\hertz}$ utilizzando MATLAB, riportiamo il risultato:
-!!!GRAFICO!!!
-Come si può notare per il range di frequenze di nostro interesse fra $\SI{4.5}{\giga\hertz}$ a $\SI{5.5}{\giga\hertz}$ il transistor risulta essere stabile. Si può anche notare il tipico andamento della stabilità del transistor, a basse frequenze il transistor può essere considerato unilatero e la stabilità migliora notevolmente, ad alte frequenze si ha un uguale miglioramento dovuto ad un valore di $S_{21}$ sempre più piccolo.
+Nel nostro caso per il primo amplificatore è stato possibile valutare $\mu$ per il transisor BFP640 polarizzato a $I_{C}=\SI{8}{\milli\ampere}$, $V_{CE}=\SI{3.0}{\volt}$ nel range di frequenze da $\SI{30}{\mega\hertz}$ a $\SI{10}{\giga\hertz}$ utilizzando MATLAB, riportiamo il risultato nel grafico di figura \ref{stab_test}.
+\begin{figure}[!htbp]
+    \centering
+        \includegraphics[width=0.6\textwidth]{img/GRAPHS/LNA_STAB.png}
+        \caption{}
+        \label{stab_test}
+\end{figure}
+%IN QUESTO GRAFICO VA LASCIATA SOLO LA STABILITA'
 
-!!! SECONDO AMP !!!
+Come si può notare per il range di frequenze di nostro interesse fra $\SI{4.5}{\giga\hertz}$ a $\SI{5.5}{\giga\hertz}$ il transistor risulta essere stabile. Si può anche notare anche l'andamento tipico della stabilità del transistor, a frequenze superiori di $\SI{4}{\giga\hertz}$ il valore di $S_{21}$ diminuisce, a fronte di una amplificazione sempre più bassa anche la porzione di segnale trasferita dall'uscita all'ingresso diminuisce, rendendo il meccanismo di retroazione intrinseco sempre più blando. La stabilità migliora anche a frequenze sufficientemente basse (intorno ai $\SI{100}{\mega\hertz}$ per questo transistor) quando il valore di $S_{12}$ diventa trascurabile e il transistor unilatero\footnote{Per rete unilatera si intende un circuito o un dispositivo in cui la trasmissione dei segnali elettrici avviene solamente da una porta di ingresso verso una di uscita e non in verso opposto.}, questo avviene in quanto la trasmissione dall'uscita verso l'ingresso è dovuta principalmente alla presenza di una capacità parassita tra base e collettore (pari a $\SI{0.08}{\pico\farad}$ da datasheet) che presenta un'impedenza elevata a bassa frequenza.
 
-\subsection{Reti di adattamento e Studio del guadagno}
+Per il secondo amplificatore la questione è più critica, come si vede già dalla figura \ref{stab_test} alla frequenza di progetto di $\SI{1.6}{\giga\hertz}$ non è garantita la stabilità incondizionata. In questa situazione si procede aiutandosi con la carta di Smith.
+
+Dai parametri di scattering del transistor è possibile ricavare delle zone di stabilità per la configurazione di ingresso e uscita, queste zone comprendono sempre il centro della carta di Smith e sono delimitate da circonferenze che possono essere disegnate manualmente, dopo aver ricavato analiticamente dai parametri di scattering il loro centro e diametro. Fortunatamente MATLAB permette di disegnare automaticamente le due circonferenze.
+\begin{figure}[!htbp]
+    \centering
+        \includegraphics[width=0.6\textwidth]{img/GRAPHS/SM_L_STAB.png}
+        \caption{Come si può notare sono una piccola parte del diagramma di Smith contiene configurazioni non stabili. Nella figura sono presenti anche le circonferenze a guadagno costante che torneranno utili nella sezione successiva.}
+\end{figure}
+
+Ai fini di quanto seguirà nella prossima sezione per aver una configurazione stabile occorrerà scegliere una rete di adattamento con un valore del coefficiente di riflessione incluso nella regione di stabilità.
+
+\section{Reti di adattamento e Studio del guadagno}
 Negli amplificatori RF il guadagno totale non dipende solo dal transistor ma anche dalle reti di adattamento che permettono di massimizzare il trasferimento di potenza dalla sorgente al transistor e dal transistor al carico.
-Vengono definiti tre guadagni, $G_P$ rappresenta il rapporto fra la potenza ai capi del transistor e la potenza dissipata sul carico,
-$G_A$ è il rapporto fra la potenza fornita dalla sorgente in ingresso e quella disponibile all'uscita del transistor, infine $G_T$ è il rapporto tra la potenza fornita dalla sorgente e quella che viene dissipata sul carico.
+Vengono definiti quattro espressioni di guadagno, $G_P$ rappresenta il rapporto fra la potenza ai capi del transistor e la potenza dissipata sul carico,
+$G_A$ è il rapporto fra la potenza fornita dalla sorgente in ingresso e quella disponibile all'uscita del transistor, $G_0$ è il guadagno in potenza del transistor quando sia l'ingresso che l'uscita sono terminati a $\SI{50}{\ohm}$ , infine $G_T$ è il rapporto tra la potenza fornita dalla sorgente e quella che viene dissipata sul carico.
 \begin{equation}
     G_A = \dfrac{\left|S_{21}\right|^2\left(1-\left|\Gamma_{S}\right|^2\right)}{\left|1-S_{11}\Gamma_{S}\right|^2\left(1-\left|\Gamma_{out}^2\right|\right)}
 \end{equation}
@@ -138,34 +323,88 @@ $G_A$ è il rapporto fra la potenza fornita dalla sorgente in ingresso e quella 
 \begin{equation}
     G_0 = \left|S_{21}\right|^2
 \end{equation}
-Queste ulteriori definizioni di guadagno sono utili in quanto non dipendono dall'adattamento di ingresso o di uscita nel caso rispettivamento di $G_P$ e $G_A$. Chiaramente il guadagno totale dell'amplificatore $G_T$ è influenzato sia dalle sezioni d'ingresso e d'uscita dell'amplificatore.
+Queste definizioni di guadagno sono utili in quanto non dipendono dall'adattamento di ingresso o di uscita nel caso rispettivamento di $G_P$ e $G_A$. Chiaramente il guadagno totale dell'amplificatore $G_T$ è influenzato sia dalle sezioni d'ingresso e d'uscita dell'amplificatore, che contribuiscono, migliorando l'adattamento di impedenza, ad aumentare il guadagno dell'amplificatore rispetto al valore ottenibile terminando il transistor a $\SI{50}{\ohm}$.
 
 Il transistor ha un suo guadagno intrinseco definito da $S_{21}$, per definizione dei parametri di scattering questo guadagno è ottenuto terminando ingresso e uscita all'impedenza caratteristica di $\SI{50}{\ohm}$. In queste condizioni l'amplificatore è parecchio limitato in termini di guadagno in quanto ad alte frequenze le impedenze di ingresso ed uscita del transistor terminate a $\SI{50}{\ohm}$ riflettono buona parte del segnale da amplificare.
 
-Per risolvere il problema vengono introdotte le reti di adattamento di impedenza che permettono di adattare l'impedenza caratteristica della linea a quelle del transistor. Per ottenere il massimo guadagno viene eseguito un adattamento coniugato, ponendo il coefficiente di riflessione $\Gamma_{L}$ e $\Gamma_{S}$ pari al complesso coniugato rispettivamente di $\Gamma_{in}$ e $\Gamma_{out}$. L'espressioni di $\Gamma_{L}$ e $\Gamma_{S}$ per ottenere adattamento coniugato si ricavano con qualche passaggio algebrico,
-!!! GAMMA IN E...!!!
+Per risolvere il problema vengono introdotte le reti di adattamento di impedenza che permettono di adattare l'impedenza caratteristica della linea a quelle del transistor. Per ottenere il massimo guadagno viene eseguito un adattamento coniugato, ponendo il coefficiente di riflessione $\Gamma_{L}$ e $\Gamma_{S}$ pari al complesso coniugato rispettivamente di $\Gamma_{in}$ e $\Gamma_{out}$. Le espressioni di $\Gamma_{L}$ e $\Gamma_{S}$ per ottenere adattamento coniugato si ricavano con qualche passaggio algebrico.
 
-Nel all'amplificatore con stub l'adattamento di impedenza è stato realizzato con la tecnica a singolo stub. Essendo incodizionatamente stabile è stato possibile perseguire una progettazione per massimo guadagno.
+\begin{equation}
+    \Gamma_{S}=\dfrac{B_{1}\pm\sqrt{B_{1}^2-4\left|C_{1}\right|^2}}{2C_{1}}
+\end{equation}
+
+\begin{equation}
+    \Gamma_{L}=\dfrac{B_{2}\pm\sqrt{B_{2}^2-4\left|C_{2}\right|^2}}{2C_{2}}
+\end{equation}
+
+Dove i parametri $B_{1}$, $C_{1}$, $B_{2}$ e $C_{2}$ sono così definiti dai parametri di scattering del transistor.
+\begin{equation}
+    B_{1} = 1 + \left|S_{11}\right|^{2} - \left|S_{22}\right|^{2} -\left|\Delta\right|^{2}
+\end{equation}
+
+\begin{equation}
+    C_{1} = S_{11} - \Delta S_{22}^{*}
+\end{equation}
+
+\begin{equation}
+    B_{2} = 1 + \left|S_{22}\right|^{2} - \left|S_{11}\right|^{2} -\left|\Delta\right|^{2}
+\end{equation}
+
+\begin{equation}
+    C_{2} = S_{22} - \Delta S_{11}^{*}
+\end{equation}
+
+
+
+Nel primo amplificatore l'adattamento di impedenza è stato realizzato con la tecnica a singolo stub. Essendo incodizionatamente stabile è stato possibile perseguire una progettazione per massimo guadagno.
 
 Con MATLAB sono stati ricavati i valori di $\Gamma_{S}$ e $\Gamma_{L}$ noti i valori dei parametri di scattering, una volta rappresentati sulla carta di Smith si può procedere al dimensionamento delle linee di trasmissione. 
 
-!!!DA CONCLUDERE!!!
+%!!!DA CONCLUDERE!!!
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/SM_STUB_SOURCE.png}
+        \caption{Impedance matching dell'ingresso. Per adattare l'impedenza d'ingresso a quella caratteristica selezioniamo una induttanza verso massa di valore $\SI{6.67}{\nano\henry}$ che ci permette di muoverci verso l'alto lungo il cerchio blu a conduttanza costante. Per raggiungere il punto $\Gamma_{S}$ occore poi inserire un condensatore serie di $\SI{2.39}{\pico\farad}$.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/SM_STUB_LOAD.png}
+        \caption{Impedance matching dell'uscita. In questo caso si agisce in maniera diversa, prima si utilizza un'induttanza serie di valore $\SI{5.40}{\nano\henry}$ e poi si introduce un condensatore verso massa di $\SI{500}{\femto\farad}$.}
+    \end{subfigure}
+    \hfill
+\end{figure}
 
 Il procedimento è leggermente diverso per il secondo amplificatore, avendo definito nella sezione precedente le zone stabili si può procedere con lo studio del guadagno.
 In questo caso vogliamo realizzare un amplificatore che abbia un guadagno di $G_T=\SI{22}{\decibel}$, esistono varie combinazioni di $G_P$ e $G_A$ che permettono di ottenere lo stesso risultato, in questo caso abbiamo scelto $G_P=\SI{25}{\decibel}$ e $G_A=\SI{22}{\decibel}$, sono stati quindi disegnate le due circoferenze che individuano tutti i coefficienti di riflessione $\Gamma_{S}$ e $\Gamma_{L}$ che permettono di ottenere rispettivamente i valori $G_P$ e $G_A$ voluti.
 
-!!!IMMAGINE MATLAB!!!
+\begin{figure}[!htbp]
+    \centering
+        \includegraphics[width=0.6\textwidth]{img/GRAPHS/SM_L_STAB.png}
+        \caption{In figura si possono notare i due punti corrispondenti ai coefficienti di riflessione scelti. Ovviamente questi due punti appartengono alle rispettive circonferenze a guadagno costante e entrambi i punti sono all'interno della zona di stabilità.}
+\end{figure}
 
 Il valore esatto dei due coefficienti di riflessione andrebbe scelto con riguardo a considerazioni di rumore che però andavano oltre lo scopo di questo elaborato, la scelta è stata quindi dettata da ragioni di tipo pratico, riportiamo i due diagrammi di smith relativi rispettivamente alla rete di ingresso e di uscita.
 
-!!! MATCHING !!!
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/SM_L_SOURCE.png}
+        \caption{Impedance matching dell'ingresso. Per adattare l'impedenza d'ingresso a quella caratteristica selezioniamo una induttanza verso massa di valore $\SI{6.67}{\nano\henry}$ che ci permette di muoverci verso l'alto lungo il cerchio blu a conduttanza costante. Per raggiungere il punto $\Gamma_{S}$ occore poi inserire un condensatore serie di $\SI{2.39}{\pico\farad}$.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/SM_L_LOAD.png}
+        \caption{Impedance matching dell'uscita. In questo caso si agisce in maniera diversa, prima si utilizza un'induttanza serie di valore $\SI{5.40}{\nano\henry}$ e poi si introduce un condensatore verso massa di $\SI{500}{\femto\farad}$.}
+    \end{subfigure}
+    \hfill
+\end{figure}
 
-Il risultato simultato dei parametri di scattering è stato ottenuto con MATLAB e lo riportiamo di seguito
-
-!!! GRAFICO !!!
-
-Si può notare il guadagno pari a $\approx\SI{22}{\decibel}$ alla frequenza di progetto, non trattandosi di un amplificatore progettato per il massimo guadagno $S_{11}$ e $S_{22}$ presentano un modulo leggermente più grande rispetto al caso precedente.
-
+Il risultato della simulazione e il confronto con i valori misurati si può trovare nella sezione \ref{sect_results}.
 % Riprendendo la figura (!!!REF!!!) si possono assegnare tre guadagni così definiti
 % \begin{equation}
 %     G_S = \dfrac{1-\left|\Gamma_{S}\right|^2}{\left|1-S_{11}\Gamma_{S}\right|^2}
@@ -176,16 +415,411 @@ Si può notare il guadagno pari a $\approx\SI{22}{\decibel}$ alla frequenza di p
 % \begin{equation}
 %     G_0 = \left|S_{21}\right|^2
 % \end{equation}
-% \subsection{Schema finale}
+\section{Schema finale}
+Il risultato finale della progettazione è riassunto nello schema finale di figura \ref{schem}. Sono presenti due connettori per le due tensioni di polarizzazione indipendenti, entrambe filtrate con un semplice filtro $RC$ passa basso. Per poter fornire l'alimentazione ad un amplificatore alla volta sono state utilizzate le resistenze da $\SI{0}{\ohm}$ $R_{9}$, $R_{6}$, $R_{2}$ e $R_{7}$.
 
-\section{Progettazione della scheda stampata}
-\section{Analisi dei risultati}
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{img/PCB/tesina.png}
+    \caption{Questo è il foglio principale del progetto, si possono vedere i due blocchi che rappresentano i due amplificatori con il filtraggio dell'alimentazione e tutti i connettori sia di alimentazione che di segnale.}
+    \label{schem}
+\end{figure}
+
+Entrando nei dettagli di ciascuno dei due blocchi possiamo ottenere lo schema finale di entrambi i due amplificatori. Ritroviamo tutto quanto discusso fino a questo punto, la rete di polarizzazione, le reti di matching e il transistor BFP640.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{img/PCB/tesina_l.png}
+    \caption{Schema completo, amplificatore con componenti discreti.}
+    \label{schem_l}
+\end{figure}
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=\textwidth]{img/PCB/tesina_stub.png}
+    \caption{Schema completo, amplificatore con stub.}
+    \label{schem_stub}
+\end{figure}
+
+\chapter{Progettazione della scheda stampata}
+La progettazione dello schema rappresenta solo la prima parte del lavoro, per ottenere un dispositivo funzionante è necessario tradurre lo schema elettrico in una scheda che possa poi essere realizzata fisicamente.
+
+\section{Scelta dei componenti}
+Una volta definito lo schema è stato necessario scegliere quali componenti utilizzare fisicamente per realizzare il circuito nella pratica, riassumiamo di seguito alcune considerazioni.
+
+\paragraph{Transistor} Il transistor è stato scelto in maniera preventiva alla progettazione dello schema, in quanto ogni scelta di progettazione dipende dalle sue caratteristiche.
+
+È stato scelto un transistor SiGe e in particolare il modello BFP640, per le sue ottime prestazioni ad alta frequenza e bassa temperatura.
+
+\paragraph{Connettori} Per poter alimentare e fornire il segnale agli amplificatori è necessario utilizzare dei connettori che mettono in comunicazione la scheda con il mondo esterno. In questa scheda sono stati utilizzati connettori di tipo SMA, con un impedenza caratteristica di $\SI{50}{\ohm}$ e una frequenza massima di $\SI{18}{\giga\hertz}$ più che sufficiente per questa applicazione.
+
+La scelta è stata influenzata anche dalla necessità di montare la scheda all'interno di una scatola di rame con lo scopo di fornire un buon contatto termico con il criostato e minimizzare la suscettibilità alle interferenze.
+
+\paragraph{Condensatori, induttori e resistori} La scelta di questi componenti è stata sostanzialmente vincolata dalla necessità di operare con caratteristiche invariate anche a bassa temperatura.
+
+Per i condensatori questo si è tradotto nella scelta di serie con dielettrico di  tipo ceramico C0G, caratterizzato dalla miglior stabilità in temperatura.
+
+Un ragionamento simile ha portato alla scelta dei resistori a film metallico e agli induttori avvolti in aria.
+
+\paragraph{Substrato della scheda} Ai fini della progettazione è stata rilevante anche la scelta del laminato, ovvero del tipo di dielettrico che separa le due facce di rame opposte di un circuito stampato. Per ottenere buone prestazioni ad alta frequenza occore un substrato a bassa perdita e con una costante dielettrica il più possibile costante sia in temperatura che in frequenza.
+
+Per lo scopo di questo elaborato è stato scelto il laminato ROGERS RO4350B con uno spessore di $\SI{0.8}{\milli\meter}$, oltre ad aver un ottimo comportamento ad alta frequenza, risulta possedere anche una grande stabilità in temperatura.
 
 
-\section{Conclusione}
+\section{Posizionamento dei componenti}
+La prima fase del layout della scheda sta nel posizionare i componenti.
+
+Per questioni meccaniche tutti e quattro i connettori di segnale sono stati disposti sul lato lungo della scheda (la scheda finita ha dimesioni $\SI{70}{\milli\meter}$ x $\SI{35}{\milli\meter}$) ed i connettori di alimentazione sul lato opposto. Questo ha vincolato la posizione dei due amplificatori, disposti uno adiacente all'altro.
+
+Rispetto ad ognuno dei due amplificatori i transistor sono stati posti in posizione centrale, le induttanze di isolamento quanto più vicine al transistor, mentre i rimanenti componenti di polarizzazione in una sede separata della scheda vicino ai filtri dell'alimentazione.
+
+
+\section{Dettagli di progettazione}
+La scheda è composta da due strati di rame separati da un dielettrico, uno dei due lati della scheda è stato dedicato all'utilizzo come piano di massa, mentre il lato principale è quello dove sono poi stati effettivamente saldati tutti i componenti del circuito.
+
+Per protegge le piste che formano i collegamenti elettrici dalla corrosione e da cortocircuiti accidentali viene applicata una vernice protettiva di colore verde chiamata solder mask. Sopra allo strato di solder mask viene stampata con una vernice bianca (il silkscreen) l'ingombro dei componenti e il nome identificativo in modo da facilitare la fase di assemblaggio.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2246.JPEG}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2245.JPEG}
+        \caption{}
+    \end{subfigure}
+    \hfill
+\end{figure}
+
+Un dettaglio a cui prestare grande attenzione è la connesione dei componenti a massa. In modo da avere contatto elettrico tra i componenti da collegare a massa che si trovano nel piano superiore della scheda stampata e il piano di massa sul lato opposto occorre utilizzare fori metalizzati che mettono in contatto i due lati opposti della scheda chiamati \textit{via}. Nei circuiti RF anche piccoli valori di induttanza possono aver effetti macroscopici data l'alta frequenza coinvolta, per questo occorre minimizzare la lunghezza delle piste verso massa e utilizzare più via in parallelo in modo da ridurre quest'induttanza parassita. Questo si nota particolarmente nella connessione verso massa dell'emettitore del transistor SiGe in figura \ref{sige_ground}.
+
+\begin{figure}[!htbp]
+    \centering
+
+    \includegraphics[width=0.6\textwidth]{img/PHOTOS/IMG_2247.JPEG}
+    \caption{Dettaglio della scheda prima della saldatura dei componenti. Sulle quattro piazziole metalliche rettangolari vicino alla scritta $Q1$ verrà saldato il transistor. Cerchiate in rosso le due aree collegate a massa attraverso numerosi \textit{via}.}
+    \label{sige_ground}
+\end{figure}
+
+Dopo aver saldato manualmente tutti i componenti la scheda si presentava in questo modo.
+
+\begin{figure}[!htbp]
+    \centering
+
+        \includegraphics[width=0.6\textwidth]{img/PHOTOS/IMG_2168.JPEG}
+        \caption{}
+    \hfill
+\end{figure}
+
+Come già accennato per avere un buon contatto termico con il criostato e per garantire una buona immunità dai disturbi esterni è stata realizzato anche un involucro di rame su cui è stata montata la scheda. La scatola di rame è stata progettata in modo da adattarsi al circuito e soddisfare i criteri termalizzazione necessari.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2168.JPEG}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2166.JPEG}
+        \caption{}
+    \end{subfigure}
+    \hfill
+\end{figure}
+
+Nonostante l'attenzione dedicata alla progettazione della scheda, dalle prime misure effettuate dopo la saldatura dei componenti è emersa la presenza di un'oscillazione a bassa frequenza. Dopo diversi tentativi senza successo la causa è stata ricondotta ad un possibile cross-talk tra lo stadio di ingresso e quello di uscita. Inserendo due schermi di rame a separazione dei due stadi l'oscillazione è sparita e le prestazioni generali dell'amplificatore sono migliorate.
+
+\chapter{Analisi dei risultati}
+\label{sect_results}
+
+\section{Apparato sperimentale per le misure a temperatura ambiente}
+\paragraph{Alimentazione del circuito}
+La prima necessità fondamentale per il funzionamento è la preparazione della scheda e il collegamento di un alimentatore stabilizzato in grado di fornire le tensioni di alimentazione necessarie.
+Come già accennato nella sezione precedente, la scheda è montata all'interno di una scatola chiusa di rame realizzata su misura che fornisce stabilità meccanica, protezione dai disturbi elettrici e permette di avere un contatto termico tra il piano raffreddato del criostato e i componenti saldati.
+
+Le tensioni di polarizzazione vengono fornite con due connettori SMA collegati ad un alimentatore Agilent E3620A.
+
+\paragraph{Misure dei parametri di scattering} 
+Per studiare il funzionamento di circuiti a queste frequenze viene utilizzato un analizzatore vettoriale di rete (Vector Network Analyzer, VNA), che permette di misurare i parametri di scattering di un circuito. Come lascia intuire il nome il suo compito è analizzare il comportamento di una rete elettrica (a cui ci si riferisce genericamente con DUT, device under test) inviando uno stimolo e misurando ampiezza e fase dei segnali riflessi e trasmessi dal DUT. I parametri di scattering sono particolarmente importante nello studio degli amplificatori oggetto di questo elaborato. Ricapitolando brevemente, $S_{21}$ rappresenta la porzione di segnale incidente in ingresso che viene amplificata in uscita, il modulo di questa quantità deve essere maggiore di uno per avere effettivamente amplificazione. $S_{11}$ e $S_{22}$ rappresentano rispettivamente la porzione di segnale incidente rispettivamente in ingresso e uscita che viene riflessa, per avere massimo guadagno queste due quantità devono essere minime, tutta la potenza riflessa non raggiunge il carico ed è quindi "sprecata".
+
+Nel nostro caso sono stati utilizzati due strumenti diversi in base alla disponibilità, un analizzatore portatile Keysight Technologies FieldFox N9916A con un range di analisi da $\SI{30}{\kilo\hertz}$ a $\SI{14}{\giga\hertz}$ e uno da laboratorio Agilent PNA-X N5245A con un range di analisi da $\SI{10}{\mega\hertz}$ a $\SI{50}{\giga\hertz}$. Entrambi gli analizzatori sono muniti di due porte bi-direzionali con cui è stato possibile misurare contemporaneamente tutti e quattro i parametri di scattering.
+
+A differenza di altri strumenti di misura presenti nei laboratori di elettronica che richiedono soltanto una calibrazione periodica, i VNA richiedono anche una calibrazione eseguita dall'utente ogni volta che viene utilizzato un particolare setup di misura. Cavi coassiali, connettori e altre discontinuità nelle linee di trasmissione possono influenzare la misura dei parametri di scattering del DUT introducendo riflessioni o perdite di cui è necessario scontarne il contributo.
+
+La calibrazione avviene terminando ciascun delle porte con carichi noti e misurando i parametri di scattering per un certo numero di punti compresi nell'intervallo di frequenze scelto. Lo standard con cui si scelgono le terminazioni da applicare dà il nome alla procedura di calibrazione. Nel nostro caso abbiamo utilizzato una procedura SOLT, ciascuna porta del VNA viene connessa attraverso l'apparato di misura che si sta calibrando a un corticircuito, ad un circuito aperto e ad un carico di impedenza caratteristica molto stabile in frequanza, calibrate le singole porte viene poi fatto un test di trasmissione collegando le due porte del VNA assieme.
+
+La procedura di calibrazione per il network analyzer PNA-X è stata eseguita grazie a un calibratore elettronico capace di eseguire l'intera procedura SOLT in maniera automatica. Per il VNA portatile è stato possibile realizzare solo una calibrazione di trasmissione tra le due porte e le misure sono da considerare meno affidabili.
+
+In figura l'analizzatore PNA-X, i due cavi coassiali vengono connessi all'ingresso e all'uscita dell'amplificatore. Tutta la configurazione è pensata per lavorare fino alla banda massima del VNA di $\SI{50}{\giga\hertz}$, i connettori utilizzati a frequenze così alte non sono compatibili meccanicamente con i più economici e meno performanti SMA e sono necessari gli adattatori che si vedono all'estremità dei cavi coassiali.
+\begin{figure}[!htbp]
+    \centering
+        \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2184.JPEG}
+        \caption{Agilent PNA-X N5245A}
+\end{figure}
+
+Purtoppo non sono disponibili foto del setup con l'analizzatore portatile. In generale è molto simile a quando mostrato sopra, lavorando fino a $\SI{14}{\giga\hertz}$ non sono necessari particolari adattatori.
+
+\paragraph{Misure nel dominio del tempo}
+Per valutare il comportamento dell'amplificatore anche nel dominio del tempo è stato preparato un secondo apparato sperimentale, consistente in un generatore di segnale Rohde \& Schwarz SMA100B capace di fornire un segnale con frequenza fino a $\SI{20}{\giga\hertz}$ ed un \textit{sampling oscilloscope} Agilent DCA-X 86100D.
+Il compito del generatore di segnale è quello di fornire un segnale sinusoidale monocromatico alla frequenza di lavoro dell'amplificatore e con una potenza di $\SI{-30}{\dBm}$, l'oscilloscopio permette di visualizzare di valutare i segnali di interesse nel dominio del tempo.
+Il funzionamento di un \textit{sampling oscilloscope} è diverso rispetto a un oscilloscopio normale. Negli oscilloscopi digitali il convertitore analogico digitale aquisice i campioni successivi ad un evento di trigger in maniera sequenziale, per digitalizzare segnali ad alta frequenza sono quindi richiesti tempi di campionamento molto brevi in modo da soddisfare il criterio di Nyquist e questo rende l'approccio molto costoso e spesso tecnologicamente impraticabile. Per ovviare a questo problema quando si lavora ad alta frequenza possono essere utilizzati \textit{sampling oscilloscope}. La loro peculiarità sta nel fatto che il campionamento effettivo del segnale avviene a frequenze relativamente basse, ma tra un campionamento e il successivo viene introdotto un piccolo ritardo temporale. Sullo schermo questi campioni vengono rappresentati come punti, solo se il segnale originale era periodico risulta possibile ricostruire la forma d'onda.
+
+Nella figura seguente l'apparato sperimentale. 
+\begin{figure}[!htbp]
+    \centering
+        \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2226.JPEG}
+        \caption{L'apparato sperimentale per le misure nel dominio del tempo. Lo strumento in alto è in generatore di segnale, mentre quello in basso il \textit{sampling oscilloscope}.}
+\end{figure}
+Analizzando la figura si può ricostruire meglio il setup. Il cavo coassiale più chiaro trasporta il segnale dal generatore a una giunzione a T terminata a $\SI{50}{\ohm}$ (riferimento figura \ref{splitter_50}) da cui si separano due linee coassiali. Una linea porta il segnale all'ingresso $2A$ dell'oscilloscopio, mentre l'altra è collegata all'ingresso dell'amplificatore. L'uscita dell'amplificatore è collegata direttamente al canale $1A$ dell'oscilloscopio.
+
+Il cavo nero più in basso nella figura porta il segnale di trigger dal retro del generatore fino all'oscilloscopio permettendo la visualizzazione di una forma d'onda fissa.
+
+La giunzione a T utilizzata per fornire il segnale sia all'oscilloscopio che all'amplificatore è realizzata in secondo lo schema che riportiamo in figura.
+
+\begin{figure}[!htbp]
+    \centering
+        \includesvg[width=0.6\textwidth]{img/WEB/Tee_power_divider.svg}
+        \caption{Il \textit{power splitter} utilizzato nella configurazione sperimentale}
+        \label{splitter_50}
+\end{figure}
+
+Si può mostrare facilmente che quando entrambe le uscite sono terminate a $\SI{50}{\ohm}$ l'impedenza vista alla porta $P1$ è esattamente $\SI{50}{\ohm}$.
 
 
 
+\section{Prestazioni a temperatura ambiente}
+
+\paragraph{Amplificatore con stub}
+
+Come detto tra le misure possibili sui dispositivi a microonde la più significativa è quella riguardante i parametri di scattering. Per questo la prima serie di misure in figura riguarda i valori del modulo dei parametri di scattering misurati con l'analizzatore PNA-X. I valori presentati sono ottenuti con lo strumento calibrato e l'amplificatore montato nella sua scatola e polarizzato come da progetto. Per avere un riferimento nei grafici è stata lasciata anche la previsione dei parametri ottenuta dalla simulazione con MATLAB. Come si può vedere in generale è presente un buon accordo con quanto misurato e quanto previsto, l'unico effetto fortemente indesiderato è la presenza di un'attenuazione costante in frequenza di ca. $\SI{2}{\decibel}$ sul parametro $S_{21}$, la stessa incongruenza si trova anche con l'analizzatore Keysight. Per quanto riguarda gli altri parametri si può notare un matching ottimo per quanto riguarda la sezione di ingresso. Anche la sezione di uscita performa relativamente bene anche se comunque non in maniera ottimale.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/S11_TAMB_SIM_STUB.png}
+        \caption{Dal confronto si può notare un buon accordo tra quanto simulato e quanto ottenuto sperimentalmente. Alla frequenza di progetto si ottiene la classica cuspide che scende fino a $\SI{-25}{\decibel}$}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/S22_TAMB_SIM_STUB.png}
+        \caption{Il comportamento di $S_{22}$ è abbastanza buono ma non ottimale, il picco di attenuazione è leggermente spostato a frequenza più bassa e raggiunge un minimo di $\SI{-13}{\decibel}$.}
+    \end{subfigure}
+    \hfill
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/S21_TAMB_SIM_STUB.png}
+        \caption{Il guadagno dell'amplificatore risulta essere leggermente inferiore di $\SI{1}{\decibel}$-$\SI{2}{\decibel}$ rispetto a quanto aspettato, l'andamento in frequenza è compatibile con i valori simulati}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/S12_TAMB_SIM_STUB.png}
+        \caption{Anche $S_{12}$ ha un buon accordo con i valori simulati}
+    \end{subfigure}
+    \hfill
+\end{figure}
+
+\paragraph{Misure Amplificatore con componenti discreti}
+
+Anche per l'amplificatore a componenti discreti è stata eseguita una misura completa dei parametri di scattering. Non avendo a disposizione l'analizzatore PNA-X la misura è stata eseguita con Keysight FieldFox con una calibrazione parziale, le misure sono quindi meno attendibili rispetto al precedente amplificatore. Anche in questo caso la scheda era montata all'interno della sua scatola polarizzata come da progetto.
+
+Dalla figura si nota in generale un comportamento decisamente peggiore rispetto a quanto previsto, la motivazione va imputata alla maggiore difficoltà di progettazione della scheda stampata e alla presenza di maggiori parassiti nei componenti reali rispetto all'idealità di quelli simulati.
+
+Anche in questo caso è stato ottenuto un valore di guadagno di due decibel inferiore rispetto a quanto previsto, si nota anche la presenza di una forte attenuazione alla frequenza di $\SI{4.3}{\giga\hertz}$, nonostante ripetuti sforzi per trovare la causa non è stato possibile trovare un potenziale colpevole.
+
+I valori dei parametri relativi alle riflessioni risultano più alti rispetto all'amplificatore precedente, come prevedibile dato che in questo caso si è perseguito una progettazione non finalizzata a ottenere il massimo guadagno.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/S11_TAMB_SIM_L.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/S22_TAMB_SIM_L.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/S21_TAMB_SIM_L.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/S12_TAMB_SIM_L.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+\end{figure}
+
+\paragraph{Misure nel dominio del tempo}
+
+Raggruppiamo le due misure nel dominio del tempo in questa sezione comune.
+Nonostante non sia stata effettuata nessuna misura quantitativa riguardo la linearità dell'amplificatore si può comunque affermare che in presenza di un segnale sinusoidale in ingresso, l'amplificatore fornisce una copia amplificata di pari frequenza. Confrontando il rapporto fra le ampiezze dei segnali si trova conferma del guadagno misurato nei paragrafi precedenti per entrambi gli amplificatori.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/SCREEN/LNA_L_6V_TAMB_TEMPO.png}
+        \caption{Come si può vedere il segnale risulta amplificato di un fattore confrontabile con quanto rilevato con il VNA e con la simulazione.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/SCREEN/LNA_STUB_6V_TAMB_TEMPO.png}
+        \caption{Anche per l'amplificatore con stub si ottiene una sinusoide in uscita con un guadagno confrontabile con quanto previsto dai parametri di scattering.}
+    \end{subfigure}
+    \hfill
+\end{figure}
+
+
+\section{Apparato sperimentale per le misure a temperatura criogenica}
+Per quanto riguarda le misure a temperature criogenica sono stati utilizzati due metodi differenti per raggiungere le basse temperature di esercizio.
+
+Per il primo amplificatore con stub è stato possibile allestire un apparato per la misura dei parametri di scattering fino a $\SI{4}{\kelvin}$. La scatola di rame contenente l'amplificatore è stata avvitata all'interno del criostato a pulse tube su una superficie di rame collegata al circuito di raffreddamento, il così detto dito od area fredda.
+Per poter raggiungere temperature dell'ordine di qualche kelvin all'interno del criostato è mantenuto il vuoto e tutta la superficie raffreddata viene protetta con vari strati di materiale superisolante. La temperatura è stata monitorata con due sensori montati sulla scheda e forniva una misura indicativa. 
+
+Le connessioni elettriche di alimentazione e di segnale sono state garantite grazie a dei connettori a tenuta ermetica montati sulla parete del criostato. Le linee coassiali sul lato freddo dei connettori erano di una particolare lega a bassa conduttività termica. L'analizzatore PNA-X è stato collegato direttamente attraverso i suoi cavi ai connettori montati sul criostato.
+
+Per motivi logistici non è stato possibile calibrare l'analizzatore, l'attenuazione dovuta alle connessioni è stata misurata a temperatura ambiente e se ne è tenuto conto manualmente.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2220.JPEG}
+        \caption{Il criostato senza coperchio, con lo strato di superisolante a vista. Sul lato a vista è possibile intravedere i quattro connettori, sulla coppia di destra è collegato il VNA, mentre quello in basso a sinistra è collegato all'alimetatore.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2189.JPEG}
+        \caption{Il controller della temperaura, i due valori in basso nello schermo corrispondo alla temperatura rivelata all'interno del criostato.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.7\textwidth}
+        \centering
+        \includegraphics[height=0.8\textwidth,angle=90]{img/PHOTOS/IMG_2182.JPEG}
+        \caption{La scatola senza coperchio montata sulla superficie raffreddata del criostato, si possono vedere le linee coassiali ancora da collegare.}
+    \end{subfigure}
+    \hfill
+    \caption{}
+\end{figure}
+
+
+Le misure sul secondo amplificatore sono state ottenute immergendo la scheda senza scatola in azoto liquido. I parametri di scattering sono stati misurati con l'analizzatore Keysight FieldFox. In figura riportiamo il setup di misura.
+
+\begin{figure}[!htbp]
+    \centering
+        
+    \includegraphics[width=0.6\textwidth]{img/PHOTOS/IMG_2222.JPEG}
+    \caption{La scheda immersa nel thermos contenente azoto liquido, i possono notare i cavi coassiali per l'alimentazione e il segnale e l'analizzatore Keysight FieldFox nello sfondo}
+    \label{ln2_setup}
+\end{figure}
+
+
+\section{Prestazioni a temperatura criogenica}
+
+\paragraph{Amplificatore con stub}
+
+La misura dell'amplificatore con stub è stata realizzata con la scheda montata nel criostato, un problema notevole apparso durante la misura ha rappresentato la presenza di una forte attenuazione dovuta alle linee coassiali all'interno del criostato. Per tenerne conto è stata realizzata una misura di trasmissione collegando in maniera diretta la linea di uscita a quella di ingresso. In figura sono riportati i risultati della misura, si vede chiaramente che nelle vicinanze della frequenza di progetto dell'amplificatore di ha una forte attenuazione. La misura è stata ottenuta a temperatura ambiente, pur commettendo un errore potenzialmente non trascurabile si è assunto che l'attenuazione dei cavi rimanga stabile anche a temperatura criogenica. 
+
+\begin{figure}[!htbp]
+    \centering
+        \includegraphics[width=0.6\textwidth]{img/GRAPHS/S21_TAMB_CAVI.png}
+    \caption{La porzione di linea coassiale all'interno del criostato comporta una attenuazione notevole del segnale alla frequenza di interesse di $\SI{5}{\giga\hertz}$ a temperatura ambiente. Purtroppo non è stato possibile ripetere la misura a temperatura criogenica}
+\end{figure}
+
+Il procedimento di raffreddamento è stato lento e graduale, questo a permesso di ottenere varie misure a temperatura intermedia, in particolare a $200$, $70$ e $\SI{4}{\kelvin}$.
+
+Ai fini della valutazione del risultato bisogna tenere conto di un aspetto cruciale, avendo la scheda montata all'interno del transistor è stato impossibile valutare l'effettivo punto di lavoro del transistor alle varie temperature operative. Le misure di $S_{21}$ riportate nella figura seguente sono state ottenute fornendo una tensione di alimentazione di $\SI{6}{\volt}$ tranne che a $\SI{4}{\kelvin}$ dove è stato necessario alzare la tensione a $\SI{10.5}{\volt}$ per ottenere un guadagno apprezzabile.
+Il modulo di $S_{21}$ tende a scendere con la temperatura in questo caso particolare. Per avere un quadro completo occorrerebbe correlare alla misura dei parametri di scattering anche le grandezze di polarizzazione.
+
+\begin{figure}[!htbp]
+    \centering
+        \includegraphics[width=0.6\textwidth]{img/GRAPHS/S21_TAMB_77K_200K_4K_SIM_STUB.png}
+    \caption{}
+\end{figure}
+
+Per completezza nella prossima figura è la misura completa del modulo di tutti i parametri di scattering alla temperatura di $\SI{4}{\kelvin}$. Come si può notare nonostante il basso valore di $S_{21}$ (a cui va comunque aggiunta la quota dovuta all'attenuazione dei cavi), i parametri relativi alle riflessioni sono sufficiente bassi in modulo.
+
+\begin{figure}[!htbp]
+    \centering
+        \includegraphics[width=0.6\textwidth]{img/SCREEN/LNA_STUB_11V_T005_meas3.png}
+    \caption{}
+\end{figure}
+
+Siccome per prendere le misure è stato utilizzato un analizzatore vettoriale è stato possibile analizzare l'adattamento di impedenza d'ingresso e d'uscita dell'amplificatore riportando anche l'informazione relativa alla fase, rappresentando le misure di $S_{11}$ e $S_{22}$ su un diagramma di Smith.
+Come si può vedere nella figura di seguito alla frequenza di lavoro il valore della parte reale dell'impedenza si attesta a $\SI{49.54}{\ohm}$ per la sezione d'uscita e a $\SI{46.86}{\ohm}$ per quella di ingresso. La parte immaginaria invece rimane dell'ordine di poche unità in entrambi i casi, all'ingresso prevale un comportamento capacitivo, mentre all'uscita predomina una componente induttiva.
+
+\begin{figure}[!htbp]
+    \centering
+    \begin{subfigure}[t]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/SCREEN/LNA_STUB_6V_T004_SMITH_S11.png}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/SCREEN/LNA_STUB_6V_T004_SMITH_S22.png}
+        \caption{}
+    \end{subfigure}
+    \caption{}
+    \hfill
+\end{figure}
+
+\paragraph{Amplificatore con componenti discreti}
+
+Per l'amplificatore a componenti discreti non è stato possibile eseguire una caratterizzazione completa fino a $\SI{4}{\kelvin}$ non avendo a disposizione l'attrezzatura necessaria. È stato comunque possibile ottenere una stima ragionevole del comportamento a bassa temperatura immergendo la scheda in azoto liquido, questo a permesso di confrontare il comportamento a temperatura ambiente già esposto con quello a $\SI{77}{\kelvin}$.
+
+Il risultato delle misure è riportato di seguito, come si può vedere dalla figura (b) si ha un discreto accordo tra il valore simulato in MATLAB e quanto trovato sperimentalmente. In questo caso il guadagno a $\SI{77}{\kelvin}$ è rimasto sostanzialmente invariato rispetto a temperatura ambiente. L'alimentazione è stata mantenuta costante a $\SI{6}{\volt}$, la corrente di collettore è diminuita a $\SI{4}{\milli\ampere}$, non è stato possibile misurare i valori della tensione collettore-emettitore.
+
+Anche a bassa temperatura è presente la forte attenuazione alla frequenza di $\approx\SI{4.3}{\giga\hertz}$. È interessante notare come nonostante le reti di adattamento siano realizzate con componenti discreti i parametri $S_{11}$ e $S_{22}$ rimangano sostanzialmente invariati in modulo, questo conferma la grande stabilità con la temperatura dei condensatori e induttori scelti.
+
+\begin{figure}[!htbp]
+    \centering
+        \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/SCREEN/LNA_L_6V_T077_FIELDFOX_.png}
+        \caption{Schermata dell'analizzatore Keysight FieldFox rappresentativa di tutti i quattro parametri di scattering misurati}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img/GRAPHS/S21_TAMB_77K_SIM_L.png}
+        \caption{Confronto fra $S_{21}$ simulato, a temperatura ambiente e a $\SI{77}{\kelvin}$}
+    \end{subfigure}
+    \hfill
+\end{figure}
+
+
+\chapter{Conclusione}
+Quest'elaborato ha permesso di sperimentare e approfondire i concetti base della progettazione RF, dando la possibilità di familiarizzare non solo con la teoria ma anche con gli strumenti e le apparecchiature sperimentali utilizzate in questo campo.
+Le conoscenze apprese hanno permesso di progettare due amplificatori che hanno dimostrato prestazioni discrete a temperatura ambiente se confrontate con quanto previsto dalla simulazione. Lo studio del comportamento a temperatura criogenica necessiterebbe di una trattazione più approfondita ma andava oltre gli obiettivi di questo elaborato.
+
+
+
+\nocite{*}
+
+%\bibliographystyle{plain} % We choose the "plain" reference style
+%\bibliography{refs} % Entries are in the refs.bib file
 
 
 
