@@ -1,0 +1,422 @@
+\documentclass{beamer}
+
+\usepackage{amsmath}
+\usepackage{siunitx}
+\usepackage{derivative}
+\usepackage{circuitikz}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{svg}
+%\usecolortheme{dracula}
+
+\setbeamertemplate{footline}[frame number]
+
+%\usetikzlibrary{decorations, decorations.pathmorphing}
+
+%\tikzset{%
+%lray/.style={decorate, decoration={
+%snake, amplitude=2pt,pre length=1pt,post length=2pt, segment length=5pt,},
+%-Triangle,
+%}}
+
+\title{Sviluppo e caratterizzazione di un amplificatore RF per rivelatori criogenici}
+\author{Nicolas Bigiotti}
+\institute{Corso di Laurea triennale in Fisica - Università degli Studi di Milano-Bicocca}
+\date{19 Luglio 2023}
+\logo{\includegraphics[scale=0.05]{img/WEB/unimib.jpg}}
+
+\begin{document}
+\ctikzset{bipoles/length=0.8cm}
+\ctikzset{bipoles/resistor/height=0.15}
+
+\frame{\titlepage}
+
+
+\begin{frame}
+    \frametitle{Motivazione e obiettivi}
+    
+    \begin{itemize}
+        \item<1->\textbf{Motivazione} Amplificatori a radiofrequenza in grado di operare anche a temperature criogeniche hanno assunto un ruolo sempre più importante, sia a livello di ricerca (Quantum Computing, Astrofisica) che industriale (telecomunicazioni).
+        %\item<1-> Approfondire gli aspetti teorici relativi alla progettazione nel campo delle microonde
+        \item<2-> \textbf{Obiettivo} Progettare e realizzare una scheda composta da due amplificatori funzionanti a $\SI{5}{\giga\hertz}$ e $\SI{1.6}{\giga\hertz}$.
+        \item<3-> \textbf{Obiettivo} Utilizzare strumenti specifici per caratterizzare l'amplificatore a temperatura ambiente e a temperatura criogenica.
+    \end{itemize}
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Cos'è un amplificatore}
+%\centering
+%Circuito che permette di aumentare l'ampiezza di un segnale in ingresso di un fattore moltiplicativo che viene chiamato guadagno.
+%\vfill
+%\begin{figure}
+%    \centering
+%    \begin{circuitikz}[scale=3, european]
+%        \draw
+%        (1,1) node[buffer] (amp) {$A$}  
+%        
+%        (0,1) node[left] (in) {$input$}
+%        (2,1) node[right] (out) {$output$}
+%
+%        (out) -- (amp.out)
+%        (in) -- (amp.in);
+%    \end{circuitikz}
+%\end{figure}
+%\end{frame}
+
+\begin{frame}
+    \frametitle{Amplicatore a radiofrequenza}
+    \begin{itemize}
+        \item<1->I segnali elettrici ad alta frequenza subiscono riflessioni e trasmissioni. Le leggi di Kirchhoff non sono più sufficienti per uno studio completo del circuito e occorre introdurre concetti tipici dell'ottica geometrica, come ad esempio il coefficiente di riflessione $\Gamma$.
+        \item<1-> In un amplificatore a radiofrequenza i segnali propagano come onde subendo riflessioni. Questo rende la progettazione di circuiti a radiofrequenza complessa.
+    \end{itemize}
+    \vfill
+    \begin{figure}
+        \centering
+        \begin{circuitikz}[scale=3, european]
+            %\newcommand\myff[3][blue]{% [opt: color] node label
+            %\draw [lray, #1, ] (#2-Ffrom) -- (#2-Fto)
+            %node [anchor=\ctikzgetanchor{#2}{Flab}, inner sep=4pt]
+            %at (#2-Fpos) {#3};}
+
+            \draw
+            (1,1) node[buffer] (amp) {$A$}  
+            
+            (0,1) node[left] (in) {$input$}
+            (2,1) node[right] (out) {$output$}
+        
+            (amp.out) -- ++(0.1,0) to[short, f>^=$V_{out}^{-}$] ++(0.01,0) to[short, f<_=$V_{out}^{+}$] ++(0.01,0) -- (out)
+            (amp.in) -- ++(-0.1,0) to[short, f>^=$V_{in}^{-}$] ++(-0.01,0) to[short, f<_=$V_{in}^{+}$] ++(-0.01,0) --(in);
+            %\myff{A}{$P_A$}\myff[red]{B}{$P_B$}
+        \end{circuitikz}
+    \end{figure}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Progettazione: punto di lavoro}
+
+                \centering
+                \begin{circuitikz}[scale=0.4]
+                    \draw
+        
+                    (1,1) node[npn] (Q) {$BFP640$}
+        
+                    (Q.B) -- (-2,1)
+                    to[L, l=$L_B$, *-] (-2,4)
+                    to[R, l=$R_{B1}$, *-*] (1,4)
+        
+                    (-2,4) to[R, l_=$R_{B2}$] (-4,4)
+                    -- (-4,6)
+        
+                    (Q.C) -- (1,2)
+                    to[L, l_=$L_C$] (1,4)
+                    to[R, l_=$R_C$] (1,6)
+        
+
+                    (1,6) node[vcc] {$V_{CC1}$}
+        
+                    (-4,6) node[vcc] {$V_{CC2}$}
+                    
+                    (Q.B) to[short,-o] ++(-3,0)
+                    node[left] {$input$}
+
+                    (Q.C) to[short,*-o] ++(1,0)
+                    node[right] {$output$}
+        
+                    (Q.E) node[ground](){};
+        
+        
+                \end{circuitikz}
+            \begin{itemize}
+                \item<1-> Nel cuore di ogni amplificatore c'è un dispositivo attivo, in questo caso è stato utilizzato un transistor bipolare a eterogiunzione al silicio-germanio, adatto ad essere utilizzato in applicazioni ad alta frequenza e bassa temperatura.
+                \item<2-> I dispositivi attivi presentano comportamenti molto diversi in funzione delle condizioni di polarizzazione a cui sono soggetti.
+                \item<3-> Scegliendo accuratamente la polarizzazione si possono ottenere le proprietà dinamiche desiderate.
+            \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Progettazione: studio di piccolo segnale}
+        
+    \begin{itemize}
+        
+        \item<1-> La scelta del punto di lavoro vincola la risposta in frequenza del transistor, la progettazione dell'amplificatore consiste nel corretto dimensionamento delle reti di adattamento.
+        \begin{figure}
+            \centering
+            \includegraphics[scale=0.3]{img/WEB/AmplifierSystem.png}
+        \end{figure}
+        
+
+        \item<2->Parametri importanti
+            \begin{itemize}
+                    \item<1-> Stabilità
+                    \item<2-> Guadagno
+            \end{itemize}    
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Rete di adattamento: Single stub matching}
+    \begin{itemize}
+        \item<1-> Per realizzare l'adattamento di impedenza è possibile utilizzare la tecnica a stub singolo. Consiste nel posizionare ad una certa distanza rispetto al transistor lungo la linea di trasmissione su cui viaggia il segnale un secondo segmento di linea di trasmissione oppurtunamente dimensionato chiamato stub.
+        \item<2-> Siccome la lunghezza degli stub è pari a frazioni di lunghezza d'onda del segnale questa tecnica diventa poco praticabile al diminuire della frequenza.
+        \item<3-> Questa tecnica è stata utilizzata nell'amplificatore da $\SI{5}{\giga\hertz}$, a questa frequenza la lunghezza d'onda del segnale è $\SI{35.53}{\milli\meter}$
+    \end{itemize}
+    
+    \begin{figure}[htbp]
+        \begin{subfigure}[c]{0.48\textwidth}
+            \includegraphics[width=\textwidth]{img/PCB/tesina_stub_grande.png}
+        \end{subfigure}
+        \begin{subfigure}[c]{0.48\textwidth}
+            \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2248_mod.JPEG}
+        \end{subfigure}
+    \end{figure}
+
+\end{frame}
+
+\begin{frame}
+    \frametitle{Rete di adattamento: L-matching}
+    \begin{itemize}
+        \item<1-> L'adattamento di impedenza può essere realizzato anche con componenti discreti (condensatori, induttori). Questa tecnica risulta migliore a frequenza più basse dove permette di risparmiare spazio senza influire troppo negativamente sulle prestazioni.
+        \item<2-> In modo da garantire buona stabilità con la temperatura sono stati utilizzati condensatori con dielettrico C0G e induttori avvolti in aria.
+        \item<3-> Per questi motivi è stata utilizzata nella realizzazione dell'amplificatore da $\SI{1.6}{\giga\hertz}$
+    \end{itemize}
+    
+    \begin{figure}[]
+        \centering
+        \includegraphics[scale=0.4]{img/PCB/tesina_l_mod.png}
+    \end{figure}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+    \frametitle{Scheda elettronica}
+    Dalla progettazione con il software CAD opensource KiCad alla scheda fisica.
+    \begin{figure}
+        \centering
+        \begin{subfigure}[t]{0.8\textwidth}
+            \centering  
+            \includegraphics[width=\textwidth]{img/PCB/kicad_pcb_mod.png}
+        \end{subfigure}
+
+        \hfill
+
+        \begin{subfigure}[b]{0.02\textheight}
+            \centering
+            \includesvg[width=\textwidth]{img/WEB/Font_Awesome_5_solid_arrow-down}
+        \end{subfigure}
+
+        \hfill
+        
+        \begin{subfigure}[b]{\textwidth}
+            \centering
+            \begin{subfigure}[l]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2246.JPEG}
+                
+            \end{subfigure}
+            \vspace{10pt}
+            \begin{subfigure}[r]{0.3\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2245.JPEG}
+                
+            \end{subfigure}
+        \end{subfigure}
+    \end{figure}
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Parametri di scattering}
+    \begin{itemize}
+        \item Realizzato l'amplificatore occorre studiare come interagisce con
+        i segnali che gli vengono forniti, a questo scopo si ricorre ai parametri di scattering.
+    \end{itemize}
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.22]{img/WEB/Basics-of-S-parameters.png}
+    \end{figure}
+    
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Risultati a temperatura ambiente: Amplificatore a $\SI{5}{\giga\hertz}$}
+    Parametri di scattering amplificatore con stub a $\SI{5}{\giga\hertz}$ misurati a temperatura ambiente.
+    \begin{figure}[!htbp]
+        \centering
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S11_TAMB_SIM_STUB.png}
+            
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S22_TAMB_SIM_STUB.png}
+            
+        \end{subfigure}
+        \hfill
+        \centering
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S21_TAMB_SIM_STUB.png}
+            
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S12_TAMB_SIM_STUB.png}
+            
+        \end{subfigure}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Risultati a temperatura ambiente: Amplificatore a $\SI{1.6}{\giga\hertz}$}
+    Parametri di scattering amplificatore con componenti discreti a $\SI{1.6}{\giga\hertz}$ misurati a temperatura ambiente.
+    \begin{figure}[!htbp]
+        \centering
+        
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S11_TAMB_SIM_L.png}
+            
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S22_TAMB_SIM_L.png}
+            
+        \end{subfigure}
+        \hfill
+        \centering
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S21_TAMB_SIM_L.png}
+            
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S12_TAMB_SIM_L.png}
+            
+        \end{subfigure}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Apparato di misura}
+    \begin{itemize}
+        \item Le misure a temperatura criogenica sono state ottenute raffreddando la scheda in un criostato a pulse tube\footnote{Si ringrazia il gruppo di astrofisica per la disponibilità nell'utilizzo del criostato} per l'amplificatore a $\SI{5}{\giga\hertz}$, e immergendola in azoto liquido per l'amplificatore a $\SI{1.6}{\giga\hertz}$.
+    \end{itemize}
+    
+    \begin{figure}
+        \centering
+        \begin{subfigure}[t]{0.5\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2220.JPEG}
+            
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[t]{0.35\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/PHOTOS/IMG_2222.JPEG}
+            
+        \end{subfigure}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Risultati a temperatura criogenica: Amplificatore a $\SI{5}{\giga\hertz}$}
+    Parametri di scattering amplificatore con stub a $\SI{5}{\giga\hertz}$ misurati a temperatura criogenica.
+    \begin{figure}[!htbp]
+        \centering
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S21_TAMB_77K_200K_4K_SIM_STUB.png}
+            
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/SCREEN/LNA_STUB_6V_T004_SMITH_S11.png}
+            
+        \end{subfigure}
+        \hfill
+        \centering
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/SCREEN/LNA_STUB_6V_T004_SMITH_S22.png}
+            
+        \end{subfigure}            
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Risultati a temperatura criogenica: Amplificatore a $\SI{1.6}{\giga\hertz}$}
+    Parametri di scattering amplificatore con componenti discreti a $\SI{1.6}{\giga\hertz}$ misurati a temperatura criogenica.
+    \begin{figure}[!htbp]
+        \centering
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S21_TAMB_77K_SIM_L.png}
+            
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S11_TAMB_77K_SIM_L.png}
+            
+        \end{subfigure}   
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S22_TAMB_77K_SIM_L.png}
+            
+        \end{subfigure} 
+        \begin{subfigure}[t]{0.4\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{img/GRAPHS/S12_TAMB_77K_SIM_L.png}
+            
+        \end{subfigure}        
+
+    \end{figure}
+\end{frame}
+
+%\begin{frame}
+%    \frametitle{Riferimenti}
+%    
+%    \nocite{*}
+%
+%    \bibliographystyle{plain} % We choose the "plain" reference style
+%    \bibliography{refs} % Entries are in the refs.bib file
+%    
+%    
+%\end{frame}
+
+
+\begin{frame}
+    \frametitle{Conclusioni}
+    \begin{itemize}
+        \item<1-> La schema elettrico è stato progettato con successo, realizzando sue amplificatori sfruttando due tecniche di matching differenti: matching con componenti discreti e con stub singolo
+        \item<2-> Il layout del scheda è stato realizzato con il software KiCad ed è stato implementato su una scheda realizzata con un dielettrico a bassa dispersione
+        \item<3-> I due amplificatori sono stati caratterizzati sia a temperatura ambiente che a temperatura criogenica, ottenendo adeguate prestazioni a temperature ambiente ed osservando una contenuta diminuzione del guadagno basse temperature.
+        \vfill
+        \item[]<4->\begin{center}
+        \textbf{Grazie dell'attenzione}
+    \end{center}
+    \end{itemize}
+    
+    
+
+\end{frame}
+
+\end{document}
+
+

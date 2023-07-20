@@ -5,4 +5,12 @@
 *.log
 *.synctex.gz
 *.pdf
+*.blg
+*.bbl
+*.toc
+*.nav
+*.out
+*.snm
+
+svg-inkscape
 img
